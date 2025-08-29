@@ -7,12 +7,20 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="quiz-container">
+  <div id="login-container">
+    <h1>Welcome to the 2× Table Quiz!</h1>
+    <input type="text" id="username" placeholder="Enter your name" />
+    <button onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <div id="quiz-container" style="display:none;">
+    <h2 id="welcome-user"></h2>
     <div id="question"></div>
     <input type="number" id="answer" onkeydown="handleKey(event)" autofocus />
     <div id="timer">Time left: 1:30</div>
     <div id="score"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
