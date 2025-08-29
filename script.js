@@ -1,3 +1,4 @@
+
 // ===================== Firebase (Compat) =====================
 // Replace with your own config if different
 const firebaseConfig = {
@@ -17,22 +18,22 @@ const db = firebase.firestore(app);
 let questions = [];
 
 // First 10: 2 × 1..12 (random 10)
-for (let i = 0; i <= 12; i++) {
+for (let i = 1; i <= 12; i++) {
   questions.push({ q: `2 × ${i}`, a: 2 * i });
 }
 let firstTen = [...questions].sort(() => 0.5 - Math.random()).slice(0, 10);
 
 // Next 10: reversed operand i × 2 (random 10)
 let reversed = [];
-for (let i = 0; i <= 12; i++) {
+for (let i = 1; i <= 12; i++) {
   reversed.push({ q: `${i} × 2`, a: 2 * i });
 }
 let secondTen = reversed.sort(() => 0.5 - Math.random()).slice(0, 10);
 
 // Final 10: division facts like '24 ÷ 12' (= 2).
 let division = [];
-for (let i = 0; i <= 12; i++) {
-  division.push({ q: `${2 * i} ÷ 2`, a: i });
+for (let i = 1; i <= 12; i++) {
+  division.push({ q: `${2 * i} ÷ ${i}`, a: 2 });
 }
 let finalTen = division.sort(() => 0.5 - Math.random()).slice(0, 10);
 
@@ -85,9 +86,11 @@ function handleKey(e) {
       startTimer();
       timerStarted = true;
     }
-    const userAns = parseInt(aEl.value);
-    userAnswers.push(userAns);
-    if (userAns === allQuestions[current].a) {
+    const raw = aEl.value.trim();
+    const userAns = raw === "" ? NaN : parseInt(raw, 10); // treat empty as incorrect
+    userAnswers.push(isNaN(userAns) ? "" : userAns);
+
+    if (!isNaN(userAns) && userAns === allQuestions[current].a) {
       score++;
     }
     current++;
