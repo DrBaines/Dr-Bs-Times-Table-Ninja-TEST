@@ -111,6 +111,9 @@ function startQuiz() {
   timerStarted = false;
   userAnswers = [];
   tEl.textContent = "Time left: 1:30";
+  let ended = false;   // add near your other run-state vars (score, time, etc.)
+let timer = null;    // make sure timer is declared so we can clear it
+
 
   document.getElementById("login-container").style.display = "none";
   document.getElementById("quiz-container").style.display = "block";
@@ -131,22 +134,16 @@ function showQuestion() {
 }
 
 // Handle Enter key to submit an answer
-function handleKey(e) {
-  if (e.key === "Enter") {
-    if (!timerStarted) {
-      startTimer();
-      timerStarted = true;
-    }
-    const raw = aEl.value.trim();
-    const userAns = raw === "" ? NaN : parseInt(raw, 10); // empty -> incorrect
-    userAnswers.push(isNaN(userAns) ? "" : userAns);
 
-    if (!isNaN(userAns) && userAns === allQuestions[current].a) {
-      score++;
-    }
-    current++;
-    showQuestion();
-  }
+function handleKey(e) {
+  if (e.key !== "Enter" || ended) return;  // ignore after end
+  if (!timerStarted) { startTimer(); timerStarted = true; }
+  const raw = aEl.value.trim();
+  const userAns = raw === "" ? NaN : parseInt(raw, 10);
+  userAnswers.push(isNaN(userAns) ? "" : userAns);
+  if (!isNaN(userAns) && userAns === allQuestions[current].a) score++;
+  current++;
+  showQuestion();   // this may call endQuiz(); guard above stops double-run
 }
 
 // Countdown
@@ -165,6 +162,14 @@ function startTimer() {
 
 // Finish -> show score, then POST to Google Sheet via queue (CORS-safe)
 function endQuiz() {
+  if (ended) return;          // 🔒 prevent double end
+  ended = true;
+
+  if (timer) {                // stop countdown immediately
+    clearInterval(timer);
+    timer = null;
+  }
+
   qEl.textContent = "";
   aEl.style.display = "none";
   tEl.style.display = "none";
@@ -176,13 +181,13 @@ function endQuiz() {
   sEl.innerHTML = `${username}, you scored ${score}/${total} <br><br>
     <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
 
-  // Unique id to help server-side dedup (if you added that)
+  // Unique id for dedup (client + server)
   const submissionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
   const payload = {
     id: submissionId,
     secret: SHEET_SECRET,
-    table: `${selectedBase}x`,
+    table: `${selectedBase || 2}x`,
     name: username,
     score: score,
     asked: asked,
@@ -191,10 +196,11 @@ function endQuiz() {
     device: navigator.userAgent
   };
 
-  // Queue first so it isn't lost on refresh; only flushQueue() sends
+  // Queue once; DO NOT send directly here
   queueSubmission(payload);
-  flushQueue();
+  flushQueue();   // ask queue to send
 }
+
 
 // Show answers with green/red colouring for entire item
 function showAnswers() {
