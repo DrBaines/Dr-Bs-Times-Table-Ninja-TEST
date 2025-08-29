@@ -5,75 +5,25 @@
   <title>2 Times Table Quiz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* Minimal styles for Teacher Mode panel */
-    #teacher-btn {
-      position: fixed; right: 16px; bottom: 16px;
-      font-size: 16px; padding: 10px 14px; opacity: 0.7;
-    }
-    #teacher-panel {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
-      align-items: center; justify-content: center; z-index: 9999;
-    }
-    #teacher-card {
-      background: #fff; padding: 20px; max-width: 900px; width: 95%;
-      max-height: 80vh; overflow: auto; border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      font-family: system-ui, sans-serif;
-    }
-    #teacher-card h3 { margin: 0 0 12px; }
-    #teacher-actions { display: flex; gap: 10px; margin: 10px 0 16px; flex-wrap: wrap; }
-    #teacher-table { width: 100%; border-collapse: collapse; font-size: 16px; }
-    #teacher-table th, #teacher-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    #teacher-close { position: absolute; top: 10px; right: 14px; font-size: 18px; }
-  </style>
 </head>
 <body>
   <!-- Welcome / Login -->
-  <div id="login-container" style="text-align:center; margin-top:150px;">
-    <h1 style="font-size:64px;">Welcome to the 2× Table Quiz!</h1>
-    <input type="text" id="username" placeholder="Enter your name"
-           style="font-size:50px; padding:20px; width:500px; text-align:center; margin-top:40px;" />
-    <br><br>
-    <button onclick="startQuiz()" 
-            style="font-size:48px; padding:25px 60px; margin-top:30px;">Start Quiz</button>
+  <div id="login-container" class="center">
+    <h1 class="title">Welcome to the 2× Table Quiz!</h1>
+    <input type="text" id="username" placeholder="Enter your name" class="big-input" />
+    <br /><br />
+    <button onclick="startQuiz()" class="big-button">Start Quiz</button>
   </div>
 
   <!-- Quiz UI -->
-  <div id="quiz-container" style="display:none; text-align:center; margin-top:60px;">
-    <h2 id="welcome-user" style="font-size:48px; margin:0 0 20px;"></h2>
-    <div id="question" style="font-size:100px; margin-bottom:30px;"></div>
-    <input type="number" id="answer" onkeydown="handleKey(event)" autofocus
-           style="font-size:80px; width:280px; text-align:center;" />
-    <div id="timer" style="font-size:50px; margin-top:30px;">Time left: 1:30</div>
-    <div id="score" style="font-size:40px; margin-top:30px;"></div>
+  <div id="quiz-container" class="center" style="display:none;">
+    <h2 id="welcome-user" class="subtitle"></h2>
+    <div id="question" class="question"></div>
+    <input type="number" id="answer" onkeydown="handleKey(event)" class="answer-input" autofocus />
+    <div id="timer" class="timer">Time left: 1:30</div>
+    <div id="score" class="score"></div>
   </div>
 
-  <!-- Teacher button -->
-  <button id="teacher-btn" onclick="openTeacher()">Teacher</button>
-
-  <!-- Teacher Mode panel -->
-  <div id="teacher-panel" onclick="panelBackdropClose(event)">
-    <div id="teacher-card">
-      <button id="teacher-close" onclick="closeTeacher()">✕</button>
-      <h3>Results (this browser)</h3>
-      <div id="teacher-actions">
-        <button onclick="downloadCSV()" style="font-size:16px; padding:10px 16px;">Download CSV</button>
-        <button onclick="clearResults()" style="font-size:16px; padding:10px 16px;">Clear results</button>
-        <span id="teacher-info" style="align-self:center; opacity:0.7;"></span>
-      </div>
-      <div style="overflow:auto;">
-        <table id="teacher-table">
-          <thead>
-            <tr><th>Name</th><th>Score</th><th>Asked</th><th>Total</th><th>Date (ISO)</th></tr>
-          </thead>
-          <tbody id="teacher-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Quiz logic -->
   <script src="script.js"></script>
 </body>
 </html>
