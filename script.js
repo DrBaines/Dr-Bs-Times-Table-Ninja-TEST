@@ -19,7 +19,7 @@ let division = [];
 for (let i = 1; i <= 12; i++) {
   division.push({ q: `${2 * i} ÷ 2`, a: i});
 }
-let finalTen = division.sort(() => 0.5 - Math.random()).slice(0, 10);
+let finalTen = division.sort(() => 0.5 - Math.random()).slice(0, 10); 
 
 // Combine all
 let allQuestions = [...firstTen, ...secondTen, ...finalTen];
