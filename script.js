@@ -1,17 +1,51 @@
-/***************** CONFIG *****************/
-const TEACHER_PASSWORD = "TEACHER123"; // change to your own
-/******************************************/
+/******** Google Sheet endpoint (multi-device) ********/
+const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwcOX1M4smRVsc3pMLXfhYinTRsC8ZCmrr0XzmeJCys4SyR9f1go6Nd27UvPZ2LC7EX7A/exec"; // from Apps Script deploy
+const SHEET_SECRET   = "Banstead123";   // must match SECRET in Apps Script
+/******************************************************/
 
-// ===================== Quiz Logic =====================
+/********* Offline/refresh-safe queue for submissions *********/
+let pendingSubmissions = JSON.parse(localStorage.getItem("pendingSubmissions") || "[]");
+
+function queueSubmission(payload) {
+  pendingSubmissions.push(payload);
+  localStorage.setItem("pendingSubmissions", JSON.stringify(pendingSubmissions));
+}
+
+async function flushQueue() {
+  if (!pendingSubmissions.length) return;
+  const remaining = [];
+  for (const payload of pendingSubmissions) {
+    try {
+      await fetch(SHEET_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      // success: drop it
+    } catch (e) {
+      // keep it for next time
+      remaining.push(payload);
+    }
+  }
+  pendingSubmissions = remaining;
+  localStorage.setItem("pendingSubmissions", JSON.stringify(pendingSubmissions));
+}
+// Try to flush whenever page becomes visible/online
+window.addEventListener("online", flushQueue);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") flushQueue();
+});
+
+/******************** QUIZ LOGIC ********************/
 let questions = [];
 
-// First 10 pool: 2 × 0..12 (we'll take 10 random)
+// First 10 pool: 2 × 0..12 (choose 10 random)
 for (let i = 0; i <= 12; i++) {
   questions.push({ q: `2 × ${i}`, a: 2 * i });
 }
 let firstTen = [...questions].sort(() => 0.5 - Math.random()).slice(0, 10);
 
-// Next 10 pool: 0..12 × 2 (10 random)
+// Next 10 pool: 0..12 × 2 (choose 10 random)
 let reversed = [];
 for (let i = 0; i <= 12; i++) {
   reversed.push({ q: `${i} × 2`, a: 2 * i });
@@ -35,9 +69,6 @@ let timer;
 let timerStarted = false;
 let userAnswers = [];
 let username = "";
-
-// Persisted results (survive refresh in this browser/session)
-let results = JSON.parse(localStorage.getItem("quizResults") || "[]");
 
 // Elements
 const qEl = document.getElementById("question");
@@ -103,7 +134,7 @@ function startTimer() {
   }, 1000);
 }
 
-// Finish (save locally)
+// Finish -> show score, then POST to Google Sheet (queued for reliability)
 function endQuiz() {
   qEl.textContent = "";
   aEl.style.display = "none";
@@ -116,9 +147,27 @@ function endQuiz() {
   sEl.innerHTML = `${username}, you scored ${score}/${total} <br><br>
     <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
 
-  // Save to local persistent store
-  results.push({ name: username, score, asked, total, date: isoDate });
-  localStorage.setItem("quizResults", JSON.stringify(results));
+  const payload = {
+    secret: SHEET_SECRET,
+    name: username,
+    score: score,
+    asked: asked,
+    total: total,
+    date: isoDate,
+    device: navigator.userAgent
+  };
+
+  // Queue first so it isn't lost on refresh
+  queueSubmission(payload);
+
+  // Try to send now; if it fails, it remains queued and will retry later
+  fetch(SHEET_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+    .then(() => flushQueue())
+    .catch(() => {/* will retry later */});
 }
 
 // Show answers with green/red colouring for entire item
@@ -136,93 +185,6 @@ function showAnswers() {
   sEl.innerHTML += answersHTML;
 }
 
-// ===================== Teacher Mode =====================
-function openTeacher() {
-  const pwd = prompt("Teacher password:");
-  if (pwd !== TEACHER_PASSWORD) {
-    if (pwd !== null) alert("Incorrect password.");
-    return;
-  }
-  renderTeacherTable();
-  document.getElementById("teacher-panel").style.display = "flex";
-}
-
-function closeTeacher() {
-  document.getElementById("teacher-panel").style.display = "none";
-}
-
-function panelBackdropClose(e) {
-  if (e.target && e.target.id === "teacher-panel") {
-    closeTeacher();
-  }
-}
-
-function renderTeacherTable() {
-  const tbody = document.getElementById("teacher-tbody");
-  const info  = document.getElementById("teacher-info");
-  tbody.innerHTML = "";
-  const data = JSON.parse(localStorage.getItem("quizResults") || "[]");
-
-  data.forEach(r => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${escapeHtml_(r.name)}</td>
-      <td>${r.score}</td>
-      <td>${r.asked}</td>
-      <td>${r.total}</td>
-      <td>${escapeHtml_(r.date)}</td>`;
-    tbody.appendChild(tr);
-  });
-
-  info.textContent = `${data.length} result${data.length === 1 ? "" : "s"} stored locally`;
-}
-
-function downloadCSV() {
-  const data = JSON.parse(localStorage.getItem("quizResults") || "[]");
-  let csv = "Name,Score,Asked,Total,Date\n";
-  data.forEach(r => {
-    const row = [
-      csvQuote_(r.name),
-      csvQuote_(r.score),
-      csvQuote_(r.asked),
-      csvQuote_(r.total),
-      csvQuote_(r.date)
-    ].join(",");
-    csv += row + "\n";
-  });
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "scores.csv";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function clearResults() {
-  if (!confirm("Clear all locally saved results on this device?")) return;
-  localStorage.removeItem("quizResults");
-  renderTeacherTable();
-}
-
-// Helpers
-function escapeHtml_(s) {
-  if (s == null) return "";
-  return String(s)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-}
-function csvQuote_(v) {
-  const s = v == null ? "" : String(v);
-  if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
-  return s;
-}
-
 // Expose functions used by inline handlers
 window.startQuiz = startQuiz;
 window.handleKey = handleKey;
-window.openTeacher = openTeacher;
-window.closeTeacher = closeTeacher;
-window.panelBackdropClose = panelBackdropClose;
-window.downloadCSV = downloadCSV;
-window.clearResults = clearResults;
