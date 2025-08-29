@@ -3,8 +3,10 @@ const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxG
 const SHEET_SECRET   = "Banstead123";   // must match SECRET in your Apps Script
 /******************************************************/
 
+
 /********* Offline/refresh-safe queue for submissions *********/
 let pendingSubmissions = JSON.parse(localStorage.getItem("pendingSubmissions") || "[]");
+let isFlushing = false;
 
 function queueSubmission(payload) {
   pendingSubmissions.push(payload);
@@ -12,15 +14,17 @@ function queueSubmission(payload) {
 }
 
 async function flushQueue() {
+  if (isFlushing) return;
   if (!pendingSubmissions.length) return;
+  isFlushing = true;
+
   const remaining = [];
   for (const payload of pendingSubmissions) {
     try {
-      // CORS-safe: no preflight (text/plain + no-cors)
       await fetch(SHEET_ENDPOINT, {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        mode: "no-cors",                                 // CORS-safe
+        headers: { "Content-Type": "text/plain;charset=utf-8" }, // no preflight
         body: JSON.stringify(payload)
       });
       // success: drop it
@@ -31,7 +35,9 @@ async function flushQueue() {
   }
   pendingSubmissions = remaining;
   localStorage.setItem("pendingSubmissions", JSON.stringify(pendingSubmissions));
+  isFlushing = false;
 }
+
 // Try to flush whenever page becomes visible/online
 window.addEventListener("online", flushQueue);
 document.addEventListener("visibilitychange", () => {
@@ -142,14 +148,15 @@ function endQuiz() {
   aEl.style.display = "none";
   tEl.style.display = "none";
 
-  const asked = Math.min(current, allQuestions.length);
+const asked = Math.min(current, allQuestions.length);
   const total = allQuestions.length;
   const isoDate = new Date().toISOString();
 
-  sEl.innerHTML = `${username}, you scored ${score}/${total} <br><br>
-    <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
+  // Unique id to prevent duplicates
+  const submissionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
   const payload = {
+    id: submissionId,
     secret: SHEET_SECRET,
     name: username,
     score: score,
