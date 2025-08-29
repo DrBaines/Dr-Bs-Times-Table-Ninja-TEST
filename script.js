@@ -1,5 +1,17 @@
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+
+// ✅ Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyA_AucFpYB9R7fhyCijbOjE3hbAKAy-O7U",
+  authDomain: "times-table-ninja.firebaseapp.com",
+  projectId: "times-table-ninja",
+  storageBucket: "times-table-ninja.appspot.com",   // ✅ fixed
+  messagingSenderId: "598819927594",
+  appId: "1:598819927594:web:ddad18370cc348df70b553"
+};
+
+// ✅ Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore(app);
 
 let questions = [];
 
@@ -97,6 +109,15 @@ function endQuiz() {
   tEl.style.display = "none";
   sEl.innerHTML = `${username}, you scored ${score}/30 <br><br>
                    <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
+
+  // ✅ Save to Firestore
+  db.collection("scores").add({
+    name: username,
+    score: score,
+    date: new Date().toISOString()
+  })
+  .then(() => console.log("Score saved"))
+  .catch(err => console.error("Error saving score:", err));
 }
 
 function showAnswers() {
