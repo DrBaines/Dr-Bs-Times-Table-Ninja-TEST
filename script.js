@@ -14,12 +14,12 @@ for (let i = 1; i <= 12; i++) {
 }
 let secondTen = reversed.sort(() => 0.5 - Math.random()).slice(0, 10);
 
-// Final 10: division facts like "24 ÷ 12"
+// Final 10: division facts
 let division = [];
 for (let i = 1; i <= 12; i++) {
   division.push({ q: `${2 * i} ÷ 2`, a: i});
 }
-let finalTen = division.sort(() => 0.5 - Math.random()).slice(0, 10); 
+let finalTen = division.sort(() => 0.5 - Math.random()).slice(0, 10);
 
 // Combine all
 let allQuestions = [...firstTen, ...secondTen, ...finalTen];
@@ -29,6 +29,7 @@ let score = 0;
 let time = 90; // 90 seconds
 let timer;
 let timerStarted = false;
+let userAnswers = [];
 
 const qEl = document.getElementById("question");
 const aEl = document.getElementById("answer");
@@ -52,6 +53,7 @@ function handleKey(e) {
       timerStarted = true;
     }
     let userAns = parseInt(aEl.value);
+    userAnswers.push(userAns);
     if (userAns === allQuestions[current].a) {
       score++;
     }
@@ -77,7 +79,21 @@ function endQuiz() {
   qEl.textContent = "";
   aEl.style.display = "none";
   tEl.style.display = "none";
-  sEl.textContent = `You scored ${score}/30`;
+  sEl.innerHTML = `You scored ${score}/30 <br><br><button onclick="showAnswers()">Click to display answers</button>`;
+}
+
+function showAnswers() {
+  let answersHTML = "<div style='display: flex; flex-wrap: wrap;'>";
+  allQuestions.forEach((q, i) => {
+    let userAns = userAnswers[i] !== undefined ? userAnswers[i] : "";
+    let correct = userAns === q.a;
+    let color = correct ? "green" : "red";
+    answersHTML += `<div style='width: 30%; margin: 10px; font-size: 24px;'>
+                      ${q.q} = <span style='font-weight: bold; color: ${color};'>${userAns}</span>
+                    </div>`;
+  });
+  answersHTML += "</div>";
+  sEl.innerHTML += answersHTML;
 }
 
 showQuestion();
