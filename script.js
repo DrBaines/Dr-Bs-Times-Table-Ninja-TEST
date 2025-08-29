@@ -94,7 +94,7 @@ function endQuiz() {
   aEl.style.display = "none";
   tEl.style.display = "none";
   sEl.innerHTML = `${username}, you scored ${score}/30 <br><br>
-                   <button onclick="showAnswers()">Click to display answers</button>`;
+                   <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
 }
 
 function showAnswers() {
@@ -103,8 +103,8 @@ function showAnswers() {
     let userAns = userAnswers[i] !== undefined ? userAnswers[i] : "";
     let correct = userAns === q.a;
     let color = correct ? "green" : "red";
-    answersHTML += `<div style='width: 30%; margin: 10px; font-size: 24px;'>
-                      ${q.q} = <span style='font-weight: bold; color: ${color};'>${userAns}</span>
+    answersHTML += `<div style='width: 30%; margin: 10px; font-size: 24px; color:${color}; font-weight:bold;'>
+                      ${q.q} = ${userAns}
                     </div>`;
   });
   answersHTML += "</div>";
