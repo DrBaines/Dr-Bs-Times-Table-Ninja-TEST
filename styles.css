@@ -4,33 +4,50 @@ body {
   background: #eef;
 }
 
-.center {
-  text-align: center;
-  margin-top: 120px;
-}
-
-.title { font-size: 64px; margin: 0 0 20px; }
+.center { text-align: center; margin-top: 100px; }
+.title { font-size: 56px; margin: 0 0 20px; }
 .subtitle { font-size: 48px; margin: 0 0 20px; }
 
+.choice-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 10px 0 30px;
+  flex-wrap: wrap;
+}
+.choice {
+  font-size: 42px;
+  padding: 18px 36px;
+  border: 3px solid #333;
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.choice.selected {
+  background: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+.name-row { margin: 10px 0 20px; }
+
 .big-input {
-  font-size: 50px;
-  padding: 20px;
+  font-size: 44px;
+  padding: 18px;
   width: 520px;
-  max-width: 90vw;
+  max-width: 92vw;
   text-align: center;
 }
 
 .big-button {
-  font-size: 48px;
-  padding: 25px 60px;
+  font-size: 44px;
+  padding: 22px 54px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 .question { font-size: 100px; margin: 30px 0; }
-.answer-input {
-  font-size: 80px;
-  width: 280px;
-  text-align: center;
-}
+.answer-input { font-size: 80px; width: 280px; text-align: center; }
 .timer { font-size: 50px; margin-top: 30px; }
 .score { font-size: 40px; margin-top: 30px; }
+
