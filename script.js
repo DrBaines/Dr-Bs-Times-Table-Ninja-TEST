@@ -3,7 +3,6 @@ const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxG
 const SHEET_SECRET   = "Banstead123";   // must match SECRET in your Apps Script
 /******************************************************/
 
-
 /********* Offline/refresh-safe queue for submissions *********/
 let pendingSubmissions = JSON.parse(localStorage.getItem("pendingSubmissions") || "[]");
 let isFlushing = false;
@@ -23,13 +22,13 @@ async function flushQueue() {
     try {
       await fetch(SHEET_ENDPOINT, {
         method: "POST",
-        mode: "no-cors",                                 // CORS-safe
-        headers: { "Content-Type": "text/plain;charset=utf-8" }, // no preflight
+        mode: "no-cors", // CORS-safe (no preflight)
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
-      // success: drop it
+      // success → drop from queue
     } catch (e) {
-      // network failed: keep it to retry later
+      // network failed → keep it to retry later
       remaining.push(payload);
     }
   }
@@ -38,38 +37,14 @@ async function flushQueue() {
   isFlushing = false;
 }
 
-// Try to flush whenever page becomes visible/online
 window.addEventListener("online", flushQueue);
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") flushQueue();
 });
 
 /******************** QUIZ LOGIC ********************/
-let questions = [];
-
-// First 10 pool: 2 × 0..12 (choose 10 random)
-for (let i = 0; i <= 12; i++) {
-  questions.push({ q: `2 × ${i}`, a: 2 * i });
-}
-let firstTen = [...questions].sort(() => 0.5 - Math.random()).slice(0, 10);
-
-// Next 10 pool: 0..12 × 2 (choose 10 random)
-let reversed = [];
-for (let i = 0; i <= 12; i++) {
-  reversed.push({ q: `${i} × 2`, a: 2 * i });
-}
-let secondTen = reversed.sort(() => 0.5 - Math.random()).slice(0, 10);
-
-// Final 10 pool: division facts ( (2*i) ÷ 2 = i ), includes 0 ÷ 2 = 0
-let division = [];
-for (let i = 0; i <= 12; i++) {
-  division.push({ q: `${2 * i} ÷ 2`, a: i });
-}
-let finalTen = division.sort(() => 0.5 - Math.random()).slice(0, 10);
-
-// Combine all (30 questions total)
-let allQuestions = [...firstTen, ...secondTen, ...finalTen];
-
+let selectedBase = null; // 2, 3, or 4
+let allQuestions = [];
 let current = 0;
 let score = 0;
 let time = 90; // seconds
@@ -84,16 +59,62 @@ const aEl = document.getElementById("answer");
 const tEl = document.getElementById("timer");
 const sEl = document.getElementById("score");
 
+// Table selection UI
+function selectTable(base) {
+  selectedBase = base;
+  // Visual selection
+  [2,3,4].forEach(b => {
+    const el = document.getElementById(`btn-${b}`);
+    if (el) el.classList.toggle("selected", b === base);
+  });
+}
+
+// Build 30 questions for the chosen base
+function buildQuestions(base) {
+  // First 10 from base × (0..12), random 10
+  const mul1 = [];
+  for (let i = 0; i <= 12; i++) mul1.push({ q: `${base} × ${i}`, a: base * i });
+  const firstTen = mul1.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+  // Next 10 from (0..12) × base, random 10
+  const mul2 = [];
+  for (let i = 0; i <= 12; i++) mul2.push({ q: `${i} × ${base}`, a: base * i });
+  const secondTen = mul2.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+  // Final 10: division facts ((base*i) ÷ base = i), includes 0 ÷ base = 0
+  const div = [];
+  for (let i = 0; i <= 12; i++) div.push({ q: `${base * i} ÷ ${base}`, a: i });
+  const finalTen = div.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+  return [...firstTen, ...secondTen, ...finalTen];
+}
+
 // Start quiz from welcome screen
 function startQuiz() {
   username = document.getElementById("username").value.trim();
+  if (!selectedBase) {
+    alert("Please choose 2×, 3× or 4×.");
+    return;
+  }
   if (username === "") {
     alert("Please enter your name to begin.");
     return;
   }
+
+  // Build the questions for the chosen base
+  allQuestions = buildQuestions(selectedBase);
+
+  // Reset run state
+  current = 0;
+  score = 0;
+  time = 90;
+  timerStarted = false;
+  userAnswers = [];
+  tEl.textContent = "Time left: 1:30";
+
   document.getElementById("login-container").style.display = "none";
   document.getElementById("quiz-container").style.display = "block";
-  document.getElementById("welcome-user").textContent = `Good luck, ${username}!`;
+  document.getElementById("welcome-user").textContent = `Good luck, ${username}! Practising ${selectedBase}×`;
 
   showQuestion();
 }
@@ -142,22 +163,26 @@ function startTimer() {
   }, 1000);
 }
 
-// Finish -> show score, then POST to Google Sheet (queued for reliability)
+// Finish -> show score, then POST to Google Sheet via queue (CORS-safe)
 function endQuiz() {
   qEl.textContent = "";
   aEl.style.display = "none";
   tEl.style.display = "none";
 
-const asked = Math.min(current, allQuestions.length);
+  const asked = Math.min(current, allQuestions.length);
   const total = allQuestions.length;
   const isoDate = new Date().toISOString();
 
-  // Unique id to prevent duplicates
+  sEl.innerHTML = `${username}, you scored ${score}/${total} <br><br>
+    <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
+
+  // Unique id to help server-side dedup (if you added that)
   const submissionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
   const payload = {
     id: submissionId,
     secret: SHEET_SECRET,
+    table: `${selectedBase}x`,
     name: username,
     score: score,
     asked: asked,
@@ -166,12 +191,9 @@ const asked = Math.min(current, allQuestions.length);
     device: navigator.userAgent
   };
 
-  // Queue first so it isn't lost on refresh
+  // Queue first so it isn't lost on refresh; only flushQueue() sends
   queueSubmission(payload);
-
-  // Ask the queue to send (will no-op if offline)
   flushQueue();
-
 }
 
 // Show answers with green/red colouring for entire item
@@ -189,6 +211,7 @@ function showAnswers() {
   sEl.innerHTML += answersHTML;
 }
 
-// Expose functions used by inline handlers
-window.startQuiz = startQuiz;
-window.handleKey = handleKey;
+// Expose to HTML handlers
+window.selectTable = selectTable;
+window.startQuiz   = startQuiz;
+window.handleKey   = handleKey;
