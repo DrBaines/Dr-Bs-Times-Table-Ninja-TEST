@@ -1,6 +1,6 @@
 /******** Google Sheet endpoint (multi-device) ********/
-const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxGVC-FdowN8V_uBjbpfFVWMxHZv3_4WUM509Bxbl6WEy5ftLhjSs_zA/exec"; // from Apps Script deploy
-const SHEET_SECRET   = "Banstead123";   // must match SECRET in Apps Script
+const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxGVC-FdowN8V_uBjbpfFVWMxHZv3_4WUM509Bxbl6WEy5ftLhjSs_zA/exec"; // e.g., https://script.google.com/macros/s/.../exec
+const SHEET_SECRET   = "Banstead123";   // must match SECRET in your Apps Script
 /******************************************************/
 
 /********* Offline/refresh-safe queue for submissions *********/
@@ -16,14 +16,16 @@ async function flushQueue() {
   const remaining = [];
   for (const payload of pendingSubmissions) {
     try {
+      // CORS-safe: no preflight (text/plain + no-cors)
       await fetch(SHEET_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
       // success: drop it
     } catch (e) {
-      // keep it for next time
+      // network failed: keep it to retry later
       remaining.push(payload);
     }
   }
@@ -160,14 +162,15 @@ function endQuiz() {
   // Queue first so it isn't lost on refresh
   queueSubmission(payload);
 
-  // Try to send now; if it fails, it remains queued and will retry later
+  // Try to send now with a CORS-safe request; if it fails, it remains queued
   fetch(SHEET_ENDPOINT, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify(payload)
   })
     .then(() => flushQueue())
-    .catch(() => {/* will retry later */});
+    .catch(() => { /* will retry later */ });
 }
 
 // Show answers with green/red colouring for entire item
