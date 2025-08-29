@@ -1,4 +1,3 @@
-
 // ===================== Firebase (Compat) =====================
 // Replace with your own config if different
 const firebaseConfig = {
@@ -17,23 +16,23 @@ const db = firebase.firestore(app);
 // ===================== Quiz Logic =====================
 let questions = [];
 
-// First 10: 2 × 1..12 (random 10)
-for (let i = 1; i <= 12; i++) {
+// First 10: 2 × 0..12 (random 10) — includes zero facts
+for (let i = 0; i <= 12; i++) {
   questions.push({ q: `2 × ${i}`, a: 2 * i });
 }
 let firstTen = [...questions].sort(() => 0.5 - Math.random()).slice(0, 10);
 
-// Next 10: reversed operand i × 2 (random 10)
+// Next 10: reversed operand 0..12 × 2 (random 10) — includes zero facts
 let reversed = [];
-for (let i = 1; i <= 12; i++) {
+for (let i = 0; i <= 12; i++) {
   reversed.push({ q: `${i} × 2`, a: 2 * i });
 }
 let secondTen = reversed.sort(() => 0.5 - Math.random()).slice(0, 10);
 
-// Final 10: division facts like '24 ÷ 12' (= 2).
+// Final 10: division facts of the 2s — use divisor 2 (safe), include 0 ÷ 2 = 0
 let division = [];
-for (let i = 1; i <= 12; i++) {
-  division.push({ q: `${2 * i} ÷ ${i}`, a: 2 });
+for (let i = 0; i <= 12; i++) {
+  division.push({ q: `${2 * i} ÷ 2`, a: i });
 }
 let finalTen = division.sort(() => 0.5 - Math.random()).slice(0, 10);
 
@@ -118,13 +117,15 @@ function endQuiz() {
   aEl.style.display = "none";
   tEl.style.display = "none";
 
-  sEl.innerHTML = `${username}, you scored ${score}/30 <br><br>
+  sEl.innerHTML = `${username}, you scored ${score}/${allQuestions.length} <br><br>
     <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
 
   // Save result (write-only; ensure your Firestore rules allow writes)
   db.collection("scores").add({
     name: username,
     score: score,
+    asked: current,                // ✅ how many questions were asked (answered or timed out)
+    total: allQuestions.length,    // total intended questions
     date: new Date().toISOString()
   })
   .then(() => console.log("Score saved"))
