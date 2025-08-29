@@ -30,11 +30,25 @@ let time = 90; // 90 seconds
 let timer;
 let timerStarted = false;
 let userAnswers = [];
+let username = "";
 
 const qEl = document.getElementById("question");
 const aEl = document.getElementById("answer");
 const tEl = document.getElementById("timer");
 const sEl = document.getElementById("score");
+
+function startQuiz() {
+  username = document.getElementById("username").value.trim();
+  if (username === "") {
+    alert("Please enter your name to begin.");
+    return;
+  }
+  document.getElementById("login-container").style.display = "none";
+  document.getElementById("quiz-container").style.display = "block";
+  document.getElementById("welcome-user").textContent = `Good luck, ${username}!`;
+
+  showQuestion();
+}
 
 function showQuestion() {
   if (current < allQuestions.length) {
@@ -79,7 +93,8 @@ function endQuiz() {
   qEl.textContent = "";
   aEl.style.display = "none";
   tEl.style.display = "none";
-  sEl.innerHTML = `You scored ${score}/30 <br><br><button onclick="showAnswers()">Click to display answers</button>`;
+  sEl.innerHTML = `${username}, you scored ${score}/30 <br><br>
+                   <button onclick="showAnswers()">Click to display answers</button>`;
 }
 
 function showAnswers() {
@@ -96,4 +111,3 @@ function showAnswers() {
   sEl.innerHTML += answersHTML;
 }
 
-showQuestion();
