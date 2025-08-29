@@ -1,35 +1,36 @@
-
-
 body {
-  font-family: sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   margin: 0;
-  background-color: #eef;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: #eef;
 }
 
-#quiz-container {
+.center {
   text-align: center;
+  margin-top: 120px;
 }
 
-#question {
-  font-size: 100px;
-  margin-bottom: 30px;
-}
+.title { font-size: 64px; margin: 0 0 20px; }
+.subtitle { font-size: 48px; margin: 0 0 20px; }
 
-#answer {
-  font-size: 80px;
-  width: 250px;
-  text-align: center;
-}
-
-#timer, #score {
+.big-input {
   font-size: 50px;
-  margin-top: 30px;
+  padding: 20px;
+  width: 520px;
+  max-width: 90vw;
+  text-align: center;
 }
 
-#score {
-  margin-top: 50px;
+.big-button {
+  font-size: 48px;
+  padding: 25px 60px;
+  cursor: pointer;
 }
+
+.question { font-size: 100px; margin: 30px 0; }
+.answer-input {
+  font-size: 80px;
+  width: 280px;
+  text-align: center;
+}
+.timer { font-size: 50px; margin-top: 30px; }
+.score { font-size: 40px; margin-top: 30px; }
