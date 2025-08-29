@@ -17,7 +17,7 @@ let secondTen = reversed.sort(() => 0.5 - Math.random()).slice(0, 10);
 // Final 10: division facts like "24 ÷ 12"
 let division = [];
 for (let i = 1; i <= 12; i++) {
-  division.push({ q: `${2 * i} ÷ 2`, a: ${i} });
+  division.push({ q: `${2 * i} ÷ 2`, a: i});
 }
 let finalTen = division.sort(() => 0.5 - Math.random()).slice(0, 10);
 
