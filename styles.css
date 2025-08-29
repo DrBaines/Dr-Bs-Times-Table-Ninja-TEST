@@ -1,4 +1,5 @@
 
+
 body {
   font-family: sans-serif;
   display: flex;
@@ -6,7 +7,7 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-color: #f4f4f4;
+  background-color: #eef;
 }
 
 #quiz-container {
@@ -14,17 +15,17 @@ body {
 }
 
 #question {
-  font-size: 150px;
-  margin-bottom: 40px;
+  font-size: 100px;
+  margin-bottom: 30px;
 }
 
 #answer {
-  font-size: 100px;
-  width: 300px;
+  font-size: 80px;
+  width: 250px;
   text-align: center;
 }
 
 #timer, #score {
-  font-size: 60px;
-  margin-top: 40px;
+  font-size: 50px;
+  margin-top: 30px;
 }
