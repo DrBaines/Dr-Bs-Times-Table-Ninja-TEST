@@ -1,3 +1,30 @@
 
-body { font-family: sans-serif; padding: 20px; }
-input { width: 50px; }
+body {
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f4f4f4;
+}
+
+#quiz-container {
+  text-align: center;
+}
+
+#question {
+  font-size: 150px;
+  margin-bottom: 40px;
+}
+
+#answer {
+  font-size: 100px;
+  width: 300px;
+  text-align: center;
+}
+
+#timer, #score {
+  font-size: 60px;
+  margin-top: 40px;
+}
