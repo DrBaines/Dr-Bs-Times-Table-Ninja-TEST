@@ -169,15 +169,9 @@ const asked = Math.min(current, allQuestions.length);
   // Queue first so it isn't lost on refresh
   queueSubmission(payload);
 
-  // Try to send now with a CORS-safe request; if it fails, it remains queued
-  fetch(SHEET_ENDPOINT, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  })
-    .then(() => flushQueue())
-    .catch(() => { /* will retry later */ });
+  // Ask the queue to send (will no-op if offline)
+  flushQueue();
+
 }
 
 // Show answers with green/red colouring for entire item
