@@ -110,4 +110,3 @@ function showAnswers() {
   answersHTML += "</div>";
   sEl.innerHTML += answersHTML;
 }
-
