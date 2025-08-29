@@ -1,14 +1,32 @@
 
-
 let questions = [];
+
+// First 10: 2 × 1 to 2 × 12 (straight)
 for (let i = 1; i <= 12; i++) {
   questions.push({ q: `2 × ${i}`, a: 2 * i });
 }
-questions = questions.sort(() => 0.5 - Math.random()).slice(0, 10);
+let firstTen = questions.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+// Next 10: reversed operand (e.g., 1 × 2 to 12 × 2)
+let reversed = [];
+for (let i = 1; i <= 12; i++) {
+  reversed.push({ q: `${i} × 2`, a: 2 * i });
+}
+let secondTen = reversed.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+// Final 10: division facts like "24 ÷ 12"
+let division = [];
+for (let i = 1; i <= 12; i++) {
+  division.push({ q: `${2 * i} ÷ ${i}`, a: 2 });
+}
+let finalTen = division.sort(() => 0.5 - Math.random()).slice(0, 10);
+
+// Combine all
+let allQuestions = [...firstTen, ...secondTen, ...finalTen];
 
 let current = 0;
 let score = 0;
-let time = 60;
+let time = 90; // 90 seconds
 let timer;
 let timerStarted = false;
 
@@ -18,8 +36,8 @@ const tEl = document.getElementById("timer");
 const sEl = document.getElementById("score");
 
 function showQuestion() {
-  if (current < questions.length) {
-    qEl.textContent = questions[current].q;
+  if (current < allQuestions.length) {
+    qEl.textContent = allQuestions[current].q;
     aEl.value = "";
     aEl.focus();
   } else {
@@ -34,7 +52,7 @@ function handleKey(e) {
       timerStarted = true;
     }
     let userAns = parseInt(aEl.value);
-    if (userAns === questions[current].a) {
+    if (userAns === allQuestions[current].a) {
       score++;
     }
     current++;
@@ -59,7 +77,7 @@ function endQuiz() {
   qEl.textContent = "";
   aEl.style.display = "none";
   tEl.style.display = "none";
-  sEl.textContent = `You scored ${score}/10`;
+  sEl.textContent = `You scored ${score}/30`;
 }
 
 showQuestion();
