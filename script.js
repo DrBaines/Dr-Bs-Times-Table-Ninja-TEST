@@ -7,30 +7,64 @@ for (let i = 1; i <= 12; i++) {
 }
 questions = questions.sort(() => 0.5 - Math.random()).slice(0, 50);
 
-let quizContainer = document.getElementById("quiz");
-questions.forEach((item, index) => {
-  quizContainer.innerHTML += `<p>${index + 1}. ${item.q} = <input type="number" id="q${index}" /></p>`;
-});
-
+let currentQuestion = 0;
+let score = 0;
+let timerStarted = false;
 let time = 300;
-let timerEl = document.getElementById("timer");
-let timer = setInterval(() => {
-  time--;
-  let minutes = Math.floor(time / 60);
-  let seconds = time % 60;
-  timerEl.textContent = `Time left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  if (time <= 0) {
-    clearInterval(timer);
-    submitQuiz();
-  }
-}, 1000);
+let timer;
 
-function submitQuiz() {
-  clearInterval(timer);
-  let score = 0;
-  questions.forEach((item, index) => {
-    let userAnswer = parseInt(document.getElementById(`q${index}`).value);
-    if (userAnswer === item.a) score++;
-  });
-  document.getElementById("score").textContent = `You scored ${score}/50`;
+let questionEl = document.getElementById("question");
+let answerEl = document.getElementById("answer");
+let timerEl = document.getElementById("timer");
+let scoreEl = document.getElementById("score");
+
+function showQuestion() {
+  if (currentQuestion < questions.length) {
+    questionEl.textContent = questions[currentQuestion].q;
+    answerEl.value = '';
+    answerEl.focus();
+  } else {
+    endQuiz();
+  }
 }
+
+function handleKey(event) {
+  if (event.key === "Enter") {
+    if (!timerStarted) {
+      startTimer();
+      timerStarted = true;
+    }
+    submitAnswer();
+  }
+}
+
+function submitAnswer() {
+  let userAnswer = parseInt(answerEl.value);
+  if (userAnswer === questions[currentQuestion].a) {
+    score++;
+  }
+  currentQuestion++;
+  showQuestion();
+}
+
+function startTimer() {
+  timer = setInterval(() => {
+    time--;
+    let minutes = Math.floor(time / 60);
+    let seconds = time % 60;
+    timerEl.textContent = `Time left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    if (time <= 0) {
+      clearInterval(timer);
+      endQuiz();
+    }
+  }, 1000);
+}
+
+function endQuiz() {
+  questionEl.textContent = "";
+  answerEl.style.display = "none";
+  timerEl.textContent = "";
+  scoreEl.textContent = `You scored ${score}/${questions.length}`;
+}
+
+showQuestion();
