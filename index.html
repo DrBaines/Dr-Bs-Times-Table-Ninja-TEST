@@ -1,12 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>2 Times Table Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Login / Welcome -->
   <div id="login-container" style="text-align:center; margin-top:150px;">
     <h1 style="font-size:64px;">Welcome to the 2× Table Quiz!</h1>
     <input type="text" id="username" placeholder="Enter your name"
@@ -16,23 +17,21 @@
             style="font-size:48px; padding:25px 60px; margin-top:30px;">Start Quiz</button>
   </div>
 
-  <div id="quiz-container" style="display:none;">
-    <h2 id="welcome-user"></h2>
-    <div id="question"></div>
-    <input type="number" id="answer" onkeydown="handleKey(event)" autofocus />
-    <div id="timer">Time left: 1:30</div>
-    <div id="score"></div>
+  <!-- Quiz UI -->
+  <div id="quiz-container" style="display:none; text-align:center; margin-top:60px;">
+    <h2 id="welcome-user" style="font-size:48px; margin:0 0 20px;"></h2>
+    <div id="question" style="font-size:100px; margin-bottom:30px;"></div>
+    <input type="number" id="answer" onkeydown="handleKey(event)" autofocus
+           style="font-size:80px; width:280px; text-align:center;" />
+    <div id="timer" style="font-size:50px; margin-top:30px;">Time left: 1:30</div>
+    <div id="score" style="font-size:40px; margin-top:30px;"></div>
   </div>
 
-
-<!-- Your quiz code LAST -->
-<script src="script.js"></script>
-
   <!-- Firebase (compat builds for firebase.* syntax) -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <!-- Your Quiz Script -->
+  <!-- Your quiz logic -->
   <script src="script.js"></script>
 </body>
 </html>
