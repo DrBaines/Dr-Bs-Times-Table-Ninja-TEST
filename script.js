@@ -56,7 +56,7 @@ let score = 0;
 let time = 90;       // seconds
 let timer = null;    // ensure we can clear it
 let timerStarted = false;
-let ended = false;   // 🔒 prevents double end
+let ended = false;   //  prevents double end
 let userAnswers = [];
 let username = "";
 
