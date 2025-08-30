@@ -97,7 +97,7 @@ function startQuiz() {
   if (timer) { clearInterval(timer); timer = null; }
   time = 90;
   timerStarted = false;
-  ended = false;              // 🔄 allow answering again
+  ended = false;              //  allow answering again
   score = 0;
   current = 0;
   userAnswers = [];
