@@ -3,7 +3,7 @@ const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxG
 const SHEET_SECRET   = "Banstead123";   // must match SECRET in your Apps Script
 /******************************************************/
 
-/********* Offline/refresh-safe queue for submissions *********/
+// ===== Offline/refresh-safe queue for submissions =====
 let pendingSubmissions = JSON.parse(localStorage.getItem("pendingSubmissions") || "[]");
 let isFlushing = false;
 
@@ -43,7 +43,7 @@ document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") flushQueue();
 });
 
-/******************** QUIZ STATE ********************/
+// ==================== QUIZ STATE ====================
 let selectedBase = null; // 2, 3, or 4
 let allQuestions = [];
 let current = 0;
@@ -51,17 +51,17 @@ let score = 0;
 let time = 90;       // seconds
 let timer = null;    // ensure we can clear it
 let timerStarted = false;
-let ended = false;   //  prevents double end
+let ended = false;   // prevents double end
 let userAnswers = [];
 let username = "";
 
-// Elements (exist on page load)
+// Elements
 const qEl = document.getElementById("question");
 const aEl = document.getElementById("answer");
 const tEl = document.getElementById("timer");
 const sEl = document.getElementById("score");
 
-/******************** TABLE SELECTION ********************/
+// ========== Table selection ==========
 function selectTable(base) {
   selectedBase = base;
   [2,3,4].forEach(b => {
@@ -82,7 +82,7 @@ function buildQuestions(base) {
   return [...firstTen, ...secondTen, ...finalTen];
 }
 
-/******************** QUIZ FLOW ********************/
+// ========== Quiz flow ==========
 function startQuiz() {
   username = document.getElementById("username").value.trim();
   if (!selectedBase) { alert("Please choose 2×, 3× or 4×."); return; }
@@ -92,14 +92,13 @@ function startQuiz() {
   if (timer) { clearInterval(timer); timer = null; }
   time = 90;
   timerStarted = false;
-  ended = false;              //  allow answering again
+  ended = false;
   score = 0;
   current = 0;
   userAnswers = [];
   tEl.textContent = "Time left: 1:30";
-  sEl.textContent = "Score: 0";
 
-  // Build questions for this run
+  // Build questions
   allQuestions = buildQuestions(selectedBase);
 
   // Show UI
@@ -107,7 +106,6 @@ function startQuiz() {
   document.getElementById("quiz-container").style.display = "block";
   document.getElementById("welcome-user").textContent = `Good luck, ${username}! Practising ${selectedBase}×`;
 
-  // Ensure input is usable
   aEl.style.display = "inline-block";
   aEl.disabled = false;
 
@@ -120,98 +118,93 @@ function showQuestion() {
     aEl.value = "";
     aEl.disabled = false;
     aEl.style.display = "inline-block";
-    setTimeout(() => aEl.focus(), 0); // ensure focus
+    setTimeout(() => aEl.focus(), 0);
   } else {
     endQuiz();
   }
 }
 
-/******************** TIMER ********************/
-function startTimer() {
-  tEl.textContent = `Time left: ${formatTime(time)}`;
-  timer = setInterval(() => {
-    time--;
-    tEl.textContent = `Time left: ${formatTime(time)}`;
-    if (time <= 0) {
-      clearInterval(timer);
-      timer = null;
-      endQuiz();
-    }
-  }, 1000);
-}
-function formatTime(sec) {
-  const min = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${min}:${s < 10 ? "0" : ""}${s}`;
-}
-
-/******************** ANSWER HANDLING ********************/
 function handleKey(e) {
-  if (e.key !== "Enter" || ended) return; // ignore when ended
+  if (e.key !== "Enter" || ended) return;
   if (!timerStarted) {
     startTimer();
     timerStarted = true;
   }
   const raw = aEl.value.trim();
   const userAns = raw === "" ? NaN : parseInt(raw, 10);
-  userAnswers.push(isNaN(userAns) ? null : userAns); // store null for invalid input
+  userAnswers.push(isNaN(userAns) ? "" : userAns);
 
-  // Check answer and update score
-  if (userAns === allQuestions[current].a) {
+  if (!isNaN(userAns) && userAns === allQuestions[current].a) {
     score++;
-    sEl.textContent = `Score: ${score}`;
   }
   current++;
   showQuestion();
 }
-aEl.addEventListener("keydown", handleKey);
 
-/******************** QUIZ ENDING & SUBMISSION ********************/
+function startTimer() {
+  if (timer) clearInterval(timer);
+  timer = setInterval(() => {
+    time--;
+    const min = Math.floor(time / 60);
+    const sec = time % 60;
+    tEl.textContent = `Time left: ${min}:${sec < 10 ? "0" : ""}${sec}`;
+    if (time <= 0) {
+      endQuiz();
+    }
+  }, 1000);
+}
+
 function endQuiz() {
   if (ended) return;
   ended = true;
+
   if (timer) { clearInterval(timer); timer = null; }
-  tEl.textContent = "Quiz ended!";
-  aEl.disabled = true;
+
+  qEl.textContent = "";
   aEl.style.display = "none";
-  qEl.textContent = "Well done!";
+  tEl.style.display = "none";
 
-  document.getElementById("summary-user").textContent = username;
-  document.getElementById("summary-score").textContent = score;
-  document.getElementById("summary-outof").textContent = allQuestions.length;
-  document.getElementById("summary-container").style.display = "block";
+  const asked = Math.min(current, allQuestions.length);
+  const total = allQuestions.length;
+  const isoDate = new Date().toISOString();
 
-  // Prepare submission payload
+  sEl.innerHTML = `${username}, you scored ${score}/${total} <br><br>
+    <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
+
+  // Unique id for dedup on server
+  const submissionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
   const payload = {
-    id: `ttninja_${Date.now()}_${Math.random().toString(36).substring(2,10)}`,
+    id: submissionId,
     secret: SHEET_SECRET,
+    table: `${selectedBase}x`,
     name: username,
-    base: selectedBase,
     score: score,
-    answers: JSON.stringify(userAnswers),
-    questions: JSON.stringify(allQuestions.map(q => q.q)),
-    timestamp: new Date().toISOString()
+    asked: asked,
+    total: total,
+    date: isoDate,
+    device: navigator.userAgent
   };
+
   queueSubmission(payload);
   flushQueue();
 }
 
-/******************** RESTART ********************/
-function restartQuiz() {
-  document.getElementById("login-container").style.display = "block";
-  document.getElementById("quiz-container").style.display = "none";
-  document.getElementById("summary-container").style.display = "none";
-  aEl.style.display = "inline-block";
-  aEl.disabled = false;
-  qEl.textContent = "";
-  sEl.textContent = "Score: 0";
-  tEl.textContent = "Time left: 1:30";
-  document.getElementById("username").value = "";
-  selectedBase = null;
-  [2,3,4].forEach(b => {
-    const el = document.getElementById(`btn-${b}`);
-    if (el) el.classList.remove("selected");
+function showAnswers() {
+  let html = "<div style='display:flex; flex-wrap:wrap; justify-content:center;'>";
+  allQuestions.forEach((q, i) => {
+    const userAns = userAnswers[i] !== undefined ? userAnswers[i] : "";
+    const correct = userAns === q.a;
+    const color = correct ? "green" : "red";
+    html += `<div style="width: 30%; min-width:260px; margin:10px; font-size:24px; color:${color}; font-weight:bold;">
+      ${q.q} = ${userAns}
+    </div>`;
   });
+  html += "</div>";
+  sEl.innerHTML += html;
 }
 
-document.getElementById("restart-btn").addEventListener("click", restartQuiz);
+// Expose to HTML
+window.selectTable = selectTable;
+window.startQuiz   = startQuiz;
+window.handleKey   = handleKey;
