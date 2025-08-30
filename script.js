@@ -1,5 +1,6 @@
+\
 /******** Google Sheet endpoint (multi-device) ********/
-const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbyIuCIgbFisSKqA0YBtC5s5ATHsHXxoqbZteJ4en7hYrf4AXmxbnMOUfeQ2ERZIERN-/exec"; // e.g., https://script.google.com/macros/s/.../exec
+const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxGVC-FdowN8V_uBjbpfFVWMxHZv3_4WUM509Bxbl6WEy5ftLhjSs_zA/exec"; // Your Web App /exec URL
 const SHEET_SECRET   = "Banstead123";   // must match SECRET in your Apps Script
 /******************************************************/
 
@@ -10,13 +11,14 @@ let isFlushing = false;
 function saveQueue_() {
   localStorage.setItem("pendingSubmissions", JSON.stringify(pendingSubmissions));
 }
+
 function queueSubmission(payload) {
   // Require id + table before queuing
   if (!payload || !payload.id || !payload.table) {
     console.warn("Not queuing bad payload (missing id/table):", payload);
     return;
   }
-  if (pendingSubmissions.some(p => p.id === payload.id)) return;
+  if (pendingSubmissions.some(p => p.id === payload.id)) return; // prevent duplicate queue entries
   pendingSubmissions.push(payload);
   saveQueue_();
 }
@@ -29,19 +31,20 @@ async function flushQueue() {
   const remaining = [];
   for (const payload of pendingSubmissions) {
     try {
-      // Skip bad legacy payloads defensively
+      // Skip any legacy/bad entries defensively
       if (!payload || !payload.id || !payload.table) {
         console.warn("Skipping bad queued payload:", payload);
         continue;
       }
       await fetch(SHEET_ENDPOINT, {
         method: "POST",
-        mode: "no-cors",
+        mode: "no-cors", // avoid CORS preflight
+        // IMPORTANT: do NOT set Content-Type header; send as text/plain Blob
         body: new Blob([JSON.stringify(payload)], { type: "text/plain;charset=utf-8" })
       });
       // success: drop it
     } catch (e) {
-      remaining.push(payload); // keep to retry
+      remaining.push(payload); // keep to retry later
       console.error("Flush failed, will retry:", e);
     }
   }
@@ -217,8 +220,8 @@ function endQuiz() {
   const tableStr = `${selectedBase}x${modeMark}`.trim(); // e.g. "3x" or "3x (tester)"
 
   const payload = {
-    id: submissionId,                // REQUIRED: stable id we generated
-    secret: SHEET_SECRET,            // REQUIRED: must match Apps Script
+    id: submissionId,                // REQUIRED
+    secret: SHEET_SECRET,            // REQUIRED
     table: tableStr,                 // REQUIRED
     name: username,
     score,
@@ -228,8 +231,17 @@ function endQuiz() {
     device: navigator.userAgent
   };
 
-  // Optional: see exactly what's being sent
-  console.log("Queueing payload:", payload);
+  // TEMP overlay for debugging payloads (comment out later if you like)
+  // document.body.insertAdjacentHTML("beforeend",
+  //   `<pre style="position:fixed;bottom:10px;left:10px;right:10px;max-height:40vh;overflow:auto;background:#111;color:#0f0;padding:8px;font:12px/1.3 monospace;z-index:99999;">
+  // ${JSON.stringify(payload, null, 2)}
+  // </pre>`);
+
+  // Guard: don't send if id/table are missing
+  if (!payload.id || !payload.table) {
+    alert("Missing id or table — not sending");
+    return;
+  }
 
   // Queue + flush
   queueSubmission(payload);
