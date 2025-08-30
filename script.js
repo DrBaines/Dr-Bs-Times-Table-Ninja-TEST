@@ -201,19 +201,19 @@ function endQuiz() {
     <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
 
   const submissionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  const modeMark = (mode === 'tester') ? ' (tester)' : '';
 
-  const payload = {
-    id: submissionId,
-    secret: SHEET_SECRET,
-    table: `${selectedBase}x${modeMark}`,
-    name: username,
-    score: score,
-    asked: asked,
-    total: total,
-    date: isoDate,
-    device: navigator.userAgent
-  };
+const modeMark = (mode === 'tester') ? ' (tester)' : '';
+const payload = {
+  id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  secret: SHEET_SECRET,                // must equal Apps Script SECRET
+  table: `${selectedBase}x${modeMark}`,// e.g., "3x (tester)"
+  name: username,
+  score,
+  asked,
+  total,
+  date: new Date().toISOString(),
+  device: navigator.userAgent
+};
 
   queueSubmission(payload);
   flushQueue();
