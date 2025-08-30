@@ -3,7 +3,6 @@ const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxG
 const SHEET_SECRET   = "Banstead123";   // must match SECRET in your Apps Script
 /******************************************************/
 
-
 /********* Offline/refresh-safe queue for submissions *********/
 let pendingSubmissions = JSON.parse(localStorage.getItem("pendingSubmissions") || "[]");
 let isFlushing = false;
