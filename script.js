@@ -97,6 +97,7 @@ function startQuiz() {
   current = 0;
   userAnswers = [];
   tEl.textContent = "Time left: 1:30";
+  sEl.textContent = "Score: 0";
 
   // Build questions for this run
   allQuestions = buildQuestions(selectedBase);
@@ -125,6 +126,26 @@ function showQuestion() {
   }
 }
 
+/******************** TIMER ********************/
+function startTimer() {
+  tEl.textContent = `Time left: ${formatTime(time)}`;
+  timer = setInterval(() => {
+    time--;
+    tEl.textContent = `Time left: ${formatTime(time)}`;
+    if (time <= 0) {
+      clearInterval(timer);
+      timer = null;
+      endQuiz();
+    }
+  }, 1000);
+}
+function formatTime(sec) {
+  const min = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${min}:${s < 10 ? "0" : ""}${s}`;
+}
+
+/******************** ANSWER HANDLING ********************/
 function handleKey(e) {
   if (e.key !== "Enter" || ended) return; // ignore when ended
   if (!timerStarted) {
@@ -133,5 +154,64 @@ function handleKey(e) {
   }
   const raw = aEl.value.trim();
   const userAns = raw === "" ? NaN : parseInt(raw, 10);
-  userAnswers.push(isNaN(userAns) ?
-                   }
+  userAnswers.push(isNaN(userAns) ? null : userAns); // store null for invalid input
+
+  // Check answer and update score
+  if (userAns === allQuestions[current].a) {
+    score++;
+    sEl.textContent = `Score: ${score}`;
+  }
+  current++;
+  showQuestion();
+}
+aEl.addEventListener("keydown", handleKey);
+
+/******************** QUIZ ENDING & SUBMISSION ********************/
+function endQuiz() {
+  if (ended) return;
+  ended = true;
+  if (timer) { clearInterval(timer); timer = null; }
+  tEl.textContent = "Quiz ended!";
+  aEl.disabled = true;
+  aEl.style.display = "none";
+  qEl.textContent = "Well done!";
+
+  document.getElementById("summary-user").textContent = username;
+  document.getElementById("summary-score").textContent = score;
+  document.getElementById("summary-outof").textContent = allQuestions.length;
+  document.getElementById("summary-container").style.display = "block";
+
+  // Prepare submission payload
+  const payload = {
+    id: `ttninja_${Date.now()}_${Math.random().toString(36).substring(2,10)}`,
+    secret: SHEET_SECRET,
+    name: username,
+    base: selectedBase,
+    score: score,
+    answers: JSON.stringify(userAnswers),
+    questions: JSON.stringify(allQuestions.map(q => q.q)),
+    timestamp: new Date().toISOString()
+  };
+  queueSubmission(payload);
+  flushQueue();
+}
+
+/******************** RESTART ********************/
+function restartQuiz() {
+  document.getElementById("login-container").style.display = "block";
+  document.getElementById("quiz-container").style.display = "none";
+  document.getElementById("summary-container").style.display = "none";
+  aEl.style.display = "inline-block";
+  aEl.disabled = false;
+  qEl.textContent = "";
+  sEl.textContent = "Score: 0";
+  tEl.textContent = "Time left: 1:30";
+  document.getElementById("username").value = "";
+  selectedBase = null;
+  [2,3,4].forEach(b => {
+    const el = document.getElementById(`btn-${b}`);
+    if (el) el.classList.remove("selected");
+  });
+}
+
+document.getElementById("restart-btn").addEventListener("click", restartQuiz);
