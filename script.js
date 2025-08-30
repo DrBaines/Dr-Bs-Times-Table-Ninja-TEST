@@ -56,7 +56,7 @@ let ended = false;   // 🔒 prevents double end
 let userAnswers = [];
 let username = "";
 
-// Elements
+// Elements (exist on page load)
 const qEl = document.getElementById("question");
 const aEl = document.getElementById("answer");
 const tEl = document.getElementById("timer");
@@ -120,14 +120,14 @@ function showQuestion() {
     aEl.value = "";
     aEl.disabled = false;
     aEl.style.display = "inline-block";
-    setTimeout(() => aEl.focus(), 0);
+    setTimeout(() => aEl.focus(), 0); // ensure focus
   } else {
     endQuiz();
   }
 }
 
 function handleKey(e) {
-  if (e.key !== "Enter" || ended) return;
+  if (e.key !== "Enter" || ended) return; // ignore when ended
   if (!timerStarted) {
     startTimer();
     timerStarted = true;
@@ -157,7 +157,7 @@ function startTimer() {
 }
 
 function endQuiz() {
-  if (ended) return;
+  if (ended) return;  // 🔒 prevent double end
   ended = true;
 
   if (timer) { clearInterval(timer); timer = null; }
@@ -170,10 +170,10 @@ function endQuiz() {
   const total = allQuestions.length;
   const isoDate = new Date().toISOString();
 
-  // ✅ Only show score here
   sEl.innerHTML = `${username}, you scored ${score}/${total} <br><br>
     <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
 
+  // Unique id for dedup (server can use it)
   const submissionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
   const payload = {
@@ -210,4 +210,3 @@ function showAnswers() {
 window.selectTable = selectTable;
 window.startQuiz   = startQuiz;
 window.handleKey   = handleKey;
-
