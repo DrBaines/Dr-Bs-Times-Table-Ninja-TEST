@@ -3,11 +3,6 @@ const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxG
 const SHEET_SECRET   = "Banstead123";   // must match SECRET in your Apps Script
 /******************************************************/
 
-/******** Google Sheet endpoint (multi-device) ********/
-const SHEET_ENDPOINT = "PASTE_YOUR_WEB_APP_URL_HERE"; // e.g., https://script.google.com/macros/s/.../exec
-const SHEET_SECRET   = "CHANGE_ME_TO_RANDOM_STRING";   // must match SECRET in Apps Script
-/******************************************************/
-
 /********* Offline/refresh-safe queue for submissions *********/
 let pendingSubmissions = JSON.parse(localStorage.getItem("pendingSubmissions") || "[]");
 let isFlushing = false;
@@ -139,3 +134,4 @@ function handleKey(e) {
   const raw = aEl.value.trim();
   const userAns = raw === "" ? NaN : parseInt(raw, 10);
   userAnswers.push(isNaN(userAns) ?
+                   }
