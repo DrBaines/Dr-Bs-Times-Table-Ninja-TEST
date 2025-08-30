@@ -3,7 +3,8 @@ const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxG
 const SHEET_SECRET   = "Banstead123";   // must match SECRET in your Apps Script
 /******************************************************/
 
-// ===== Offline/refresh-safe queue for submissions =====
+
+/********* Offline/refresh-safe queue for submissions *********/
 let pendingSubmissions = JSON.parse(localStorage.getItem("pendingSubmissions") || "[]");
 let isFlushing = false;
 
@@ -43,7 +44,7 @@ document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") flushQueue();
 });
 
-// ==================== QUIZ STATE ====================
+/******************** QUIZ STATE ********************/
 let selectedBase = null; // 2, 3, or 4
 let allQuestions = [];
 let current = 0;
@@ -51,7 +52,7 @@ let score = 0;
 let time = 90;       // seconds
 let timer = null;    // ensure we can clear it
 let timerStarted = false;
-let ended = false;   // prevents double end
+let ended = false;   // 🔒 prevents double end
 let userAnswers = [];
 let username = "";
 
@@ -61,7 +62,7 @@ const aEl = document.getElementById("answer");
 const tEl = document.getElementById("timer");
 const sEl = document.getElementById("score");
 
-// ========== Table selection ==========
+/******************** TABLE SELECTION ********************/
 function selectTable(base) {
   selectedBase = base;
   [2,3,4].forEach(b => {
@@ -82,7 +83,7 @@ function buildQuestions(base) {
   return [...firstTen, ...secondTen, ...finalTen];
 }
 
-// ========== Quiz flow ==========
+/******************** QUIZ FLOW ********************/
 function startQuiz() {
   username = document.getElementById("username").value.trim();
   if (!selectedBase) { alert("Please choose 2×, 3× or 4×."); return; }
@@ -92,13 +93,13 @@ function startQuiz() {
   if (timer) { clearInterval(timer); timer = null; }
   time = 90;
   timerStarted = false;
-  ended = false;
+  ended = false;              // 🔄 allow answering again
   score = 0;
   current = 0;
   userAnswers = [];
   tEl.textContent = "Time left: 1:30";
 
-  // Build questions
+  // Build questions for this run
   allQuestions = buildQuestions(selectedBase);
 
   // Show UI
@@ -106,6 +107,7 @@ function startQuiz() {
   document.getElementById("quiz-container").style.display = "block";
   document.getElementById("welcome-user").textContent = `Good luck, ${username}! Practising ${selectedBase}×`;
 
+  // Ensure input is usable
   aEl.style.display = "inline-block";
   aEl.disabled = false;
 
@@ -168,10 +170,10 @@ function endQuiz() {
   const total = allQuestions.length;
   const isoDate = new Date().toISOString();
 
+  // ✅ Only show score here
   sEl.innerHTML = `${username}, you scored ${score}/${total} <br><br>
     <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
 
-  // Unique id for dedup on server
   const submissionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
   const payload = {
@@ -208,3 +210,4 @@ function showAnswers() {
 window.selectTable = selectTable;
 window.startQuiz   = startQuiz;
 window.handleKey   = handleKey;
+
