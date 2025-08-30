@@ -1,6 +1,6 @@
-\
+
 /******** Google Sheet endpoint (multi-device) ********/
-const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbwx2FJ3l20bC0PxGVC-FdowN8V_uBjbpfFVWMxHZv3_4WUM509Bxbl6WEy5ftLhjSs_zA/exec"; // Your Web App /exec URL
+const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbyIuCIgbFisSKqA0YBtC5s5ATHsHXxoqbZteJ4en7hYrf4AXmxbnMOUfeQ2ERZIERN-/exec"; // Your Web App /exec URL
 const SHEET_SECRET   = "Banstead123";   // must match SECRET in your Apps Script
 /******************************************************/
 
