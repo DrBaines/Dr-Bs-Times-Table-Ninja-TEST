@@ -2,46 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Times Table Quiz (2× / 3× / 4×)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>">
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Times Table Ninja Test</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    .selected { background: #def; }
+  </style>
 </head>
 <body>
-  <!-- Welcome / Login -->
-  <div id="login-container" class="center">
-    <h1 class="title">Choose your times table</h1>
-
-    <!-- Table choices -->
-    <div id="table-choices" class="choice-buttons">
-      <button type="button" class="choice" id="btn-2" onclick="selectTable(2)">2×</button>
-      <button type="button" class="choice" id="btn-3" onclick="selectTable(3)">3×</button>
-      <button type="button" class="choice" id="btn-4" onclick="selectTable(4)">4×</button>
+  <div id="login-container">
+    <input id="username" placeholder="Your name" />
+    <div>
+      <button id="btn-2" onclick="selectTable(2)">2×</button>
+      <button id="btn-3" onclick="selectTable(3)">3×</button>
+      <button id="btn-4" onclick="selectTable(4)">4×</button>
     </div>
-
-    <!-- Mode choices -->
-    <h2 class="subtitle" style="font-size:32px; margin-top:10px;">Mode</h2>
-    <div id="mode-choices" class="choice-buttons">
-      <button type="button" class="choice" id="mode-baseline" onclick="selectMode('baseline')">Baseline (30 Q / 90s)</button>
-      <button type="button" class="choice" id="mode-tester"   onclick="selectMode('tester')">Tester (12 Q / 30s)</button>
+    <div>
+      <button id="mode-baseline" onclick="selectMode('baseline')">Baseline</button>
+      <button id="mode-tester" onclick="selectMode('tester')">Tester</button>
     </div>
-
-    <div class="name-row">
-      <input type="text" id="username" placeholder="Enter your name" class="big-input" />
-    </div>
-
-    <button id="start-btn" onclick="startQuiz()" class="big-button">Start Quiz</button>
+    <button onclick="startQuiz()">Start Quiz</button>
   </div>
 
-  <!-- Quiz UI -->
-  <div id="quiz-container" class="center" style="display:none;">
-    <h2 id="welcome-user" class="subtitle"></h2>
-    <div id="question" class="question"></div>
-    <input type="number" id="answer" onkeydown="handleKey(event)" class="answer-input" autofocus />
-    <div id="timer" class="timer">Time left: 1:30</div>
-    <div id="score" class="score"></div>
+  <div id="quiz-container" style="display:none;">
+    <h2 id="welcome-user"></h2>
+    <div id="question" style="font-size:32px; margin:20px 0;"></div>
+    <input id="answer" type="number" style="font-size:24px;" onkeydown="handleKey(event)" />
+    <div id="timer" style="margin:20px 0;"></div>
+    <div id="score" style="margin:20px 0;"></div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Cache-busted script include -->
+  <script src="script.js?v=2025-08-30-01"></script>
 </body>
 </html>
