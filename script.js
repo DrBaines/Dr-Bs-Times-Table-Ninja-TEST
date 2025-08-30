@@ -26,12 +26,13 @@ async function flushQueue() {
       await fetch(SHEET_ENDPOINT, {
         method: "POST",
         mode: "no-cors", // CORS-safe (no preflight)
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
+        // IMPORTANT: do NOT set Content-Type header; send a text/plain Blob
+        body: new Blob([JSON.stringify(payload)], { type: "text/plain;charset=utf-8" })
       });
       // success: drop
     } catch (e) {
       remaining.push(payload); // keep to retry later
+      console.error("Flush failed, will retry:", e);
     }
   }
   pendingSubmissions = remaining;
@@ -195,26 +196,31 @@ function endQuiz() {
 
   const asked = Math.min(current, allQuestions.length);
   const total = allQuestions.length;
-  const isoDate = new Date().toISOString();
 
   sEl.innerHTML = `${username}, you scored ${score}/${total} <br><br>
     <button onclick="showAnswers()" style="font-size:32px; padding:15px 40px;">Click to display answers</button>`;
 
+  // ----- Build payload correctly -----
   const submissionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const modeMark = (mode === 'tester') ? ' (tester)' : '';
+  const tableStr = `${selectedBase}x${modeMark}`.trim(); // e.g. "3x" or "3x (tester)"
 
-const modeMark = (mode === 'tester') ? ' (tester)' : '';
-const payload = {
-  id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-  secret: SHEET_SECRET,                // must equal Apps Script SECRET
-  table: `${selectedBase}x${modeMark}`,// e.g., "3x (tester)"
-  name: username,
-  score,
-  asked,
-  total,
-  date: new Date().toISOString(),
-  device: navigator.userAgent
-};
+  const payload = {
+    id: submissionId,                // REQUIRED: stable id we generated
+    secret: SHEET_SECRET,            // REQUIRED: must match Apps Script
+    table: tableStr,                 // REQUIRED
+    name: username,
+    score,
+    asked,
+    total,
+    date: new Date().toISOString(),
+    device: navigator.userAgent
+  };
 
+  // Optional: see exactly what's being sent
+  console.log("Queueing payload:", payload);
+
+  // Queue + flush
   queueSubmission(payload);
   flushQueue();
 }
