@@ -11,10 +11,16 @@ function saveQueue_() {
   localStorage.setItem("pendingSubmissions", JSON.stringify(pendingSubmissions));
 }
 function queueSubmission(payload) {
-  if (pendingSubmissions.some(p => p.id === payload.id)) return; // prevent duplicate queue entries
+  // Require id + table before queuing
+  if (!payload || !payload.id || !payload.table) {
+    console.warn("Not queuing bad payload (missing id/table):", payload);
+    return;
+  }
+  if (pendingSubmissions.some(p => p.id === payload.id)) return;
   pendingSubmissions.push(payload);
   saveQueue_();
 }
+
 async function flushQueue() {
   if (isFlushing) return;
   if (!pendingSubmissions.length) return;
@@ -23,15 +29,19 @@ async function flushQueue() {
   const remaining = [];
   for (const payload of pendingSubmissions) {
     try {
+      // Skip bad legacy payloads defensively
+      if (!payload || !payload.id || !payload.table) {
+        console.warn("Skipping bad queued payload:", payload);
+        continue;
+      }
       await fetch(SHEET_ENDPOINT, {
         method: "POST",
-        mode: "no-cors", // CORS-safe (no preflight)
-        // IMPORTANT: do NOT set Content-Type header; send a text/plain Blob
+        mode: "no-cors",
         body: new Blob([JSON.stringify(payload)], { type: "text/plain;charset=utf-8" })
       });
-      // success: drop
+      // success: drop it
     } catch (e) {
-      remaining.push(payload); // keep to retry later
+      remaining.push(payload); // keep to retry
       console.error("Flush failed, will retry:", e);
     }
   }
@@ -39,6 +49,7 @@ async function flushQueue() {
   saveQueue_();
   isFlushing = false;
 }
+
 window.addEventListener("online", flushQueue);
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") flushQueue();
