@@ -76,5 +76,3 @@ When asking for help, **open a new chat per area** and paste only the relevant c
 - Mixed-tables practice (random across chosen sets).  
 - Leaderboard or class report view.  
 - Export results to CSV or PDF.  
-
----
