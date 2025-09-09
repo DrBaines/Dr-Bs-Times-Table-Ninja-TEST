@@ -340,3 +340,10 @@ html, body {
   border-radius: 12px;
   box-shadow: 0 8px 28px rgba(0,0,0,0.12);
 }
+@media (max-width: 1024px) and (hover: none) and (pointer: coarse) {
+  .answer-input {
+    width: 520px;
+    max-width: 92vw;
+    font-size: 88px;
+  }
+}
