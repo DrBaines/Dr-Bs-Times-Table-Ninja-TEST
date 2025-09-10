@@ -400,3 +400,25 @@ html, body {
   color: #fff;
   border-color: #222;
 }
+.front-images {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.front-images img {
+  height: auto;
+}
+
+/* Sizes for each image */
+.ninja-baby {
+  max-width: 100px; /* smallest */
+}
+.ninja-mini {
+  max-width: 160px; /* medium */
+}
+.ninja-main {
+  max-width: 220px; /* largest */
+}
