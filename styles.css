@@ -417,13 +417,13 @@ html, body {
 }
 
 /* Baby → Mini → Ninja sizes */
-.front-images img.ninja-baby  { height: 56px !important; width: auto !important; }
-.front-images img.ninja-mini  { height: 78px !important; width: auto !important; }
-.front-images img.ninja-main  { height: 100px !important; width: auto !important; }
+.front-images img.ninja-baby  { height: 100px !important; width: auto !important; }
+.front-images img.ninja-mini  { height: 150px !important; width: auto !important; }
+.front-images img.ninja-main  { height: 200px !important; width: auto !important; }
 
 /* iPad portrait fine-tune (optional, slightly smaller) */
 @media (min-width: 700px) and (max-width: 834px) and (orientation: portrait) {
-  .front-images img.ninja-baby  { height: 52px !important; }
-  .front-images img.ninja-mini  { height: 72px !important; }
-  .front-images img.ninja-main  { height: 92px !important; }
+  .front-images img.ninja-baby  { height: 100px !important; }
+  .front-images img.ninja-mini  { height: 150px !important; }
+  .front-images img.ninja-main  { height: 200px !important; }
 }
