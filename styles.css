@@ -342,3 +342,9 @@ html, body {
     font-size: 84px;  /* optional: slightly smaller so longer numbers fit */
   }
 }
+
+.choice.active {
+  background: #444;
+  color: #fff;
+  border-color: #222;
+}
