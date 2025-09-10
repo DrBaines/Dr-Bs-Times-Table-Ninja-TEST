@@ -404,21 +404,24 @@ html, body {
   margin-top: 20px;
   display: flex;
   justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
+  align-items: flex-end; /* keep bottoms aligned */
+  gap: 12px; /* tighter gap so they fit on iPad portrait */
+  flex-wrap: nowrap; /* keep them on one row */
 }
 
 .front-images img {
   height: auto;
+  max-height: 140px; /* limit height so all fit on iPad portrait */
+  width: auto;
 }
 
 /* Sizes for each image */
 .ninja-baby {
-  max-width: 100px; /* smallest */
+  max-width: 90px; /* smallest */
 }
 .ninja-mini {
-  max-width: 160px; /* medium */
+  max-width: 115px; /* medium */
 }
 .ninja-main {
-  max-width: 220px; /* largest */
+  max-width: 140px; /* largest */
 }
