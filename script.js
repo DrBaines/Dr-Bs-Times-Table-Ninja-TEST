@@ -222,12 +222,28 @@ window.selectBabyTable = selectBabyTable;
 /* ====== Mini Tests ====== */
 let selectedBase = 2;
 function buildTableButtons(){
-  const wrap = $("table-choices"); if(!wrap) return;
+  const wrap = $("table-choices"); 
+  if (!wrap) return;
   let html = "";
-  for (let b=2;b<=12;b++){ html += `<button class="table-btn" onclick="selectTable(${b})">${b}×</button>`; }
+  for (let b = 2; b <= 12; b++) {
+    html += `<button id="table-btn-${b}" class="choice" onclick="selectTable(${b})">${b}×</button>`;
+  }
   wrap.innerHTML = html;
 }
-function selectTable(b){ selectedBase = clamp(b,2,12); }
+
+function selectTable(b){
+  selectedBase = clamp(b, 2, 12);
+
+  // Clear all highlights first
+  for (let i = 2; i <= 12; i++) {
+    const btn = document.getElementById(`table-btn-${i}`);
+    if (btn) btn.classList.remove("selected");
+  }
+
+  // Highlight the chosen one
+  const chosen = document.getElementById(`table-btn-${b}`);
+  if (chosen) chosen.classList.add("selected");
+}
 function buildMiniQuestions(base, total){
   // Build three structured sets of 10 each
   const set1 = []; // i × base
