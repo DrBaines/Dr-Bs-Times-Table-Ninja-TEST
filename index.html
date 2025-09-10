@@ -9,39 +9,32 @@
 <body>
 
   <!-- HOME -->
-  <section id="home-screen" class="center" style="display:block;">
-    <h1 class="title">Dr B's Times Table Ninja</h1>
+  <!-- HOME -->
+<section id="home-screen" class="center" style="display:block;">
+  <h1 class="title">Dr B's Times Table Ninja</h1>
+  <div id="welcome-user"></div>
+  <div class="name-row">
+    <label class="visually-hidden" for="home-username">Your name</label>
+    <input id="home-username" class="big-input" placeholder="Type your name…" autocomplete="off" />
+  </div>
 
-    <div id="welcome-user"></div>
-
-    <div class="name-row">
-      <label class="visually-hidden" for="home-username">Your name</label>
-      <input
-        id="home-username"
-        class="big-input"
-        placeholder="Type your name…"
-        autocomplete="off"
-        aria-label="Your name"
-      />
-    </div>
-
-    <div class="choice-buttons" role="group" aria-label="Main choices">
+  <!-- Single row of test choices -->
+  <div class="choice-buttons" role="group" aria-label="Main choices">
       <button id="btn-baby" class="choice" onclick="goBaby()">Baby Ninjas</button>
-      <button id="btn-mini" class="choice" onclick="goMini()">Mini Tests</button>
-      <button id="btn-ninja" class="choice" onclick="goNinja()">Ninja Belt</button>
-    </div>
-    
+    <button id="btn-mini" class="choice" onclick="goMini()">Mini Tests</button>
+    <button id="btn-ninja" class="choice" onclick="goNinja()">Ninja Belt</button>
+  
+  </div>
 
-    <!-- Title image under the buttons -->
-    <div class="home-hero">
-      <img 
-    src="./images/title-pic.png" 
-    alt="Dr B's Times Table Ninja" 
-    loading="lazy" 
-    style="max-width: 320px; width: 90%; height: auto; margin-top: 20px;"
-  />
-    </div>
-  </section>
+  <!-- Images row -->
+  <div class="front-images">
+    <img src="./images/baby.png" alt="Baby Ninja" />
+    <img src="./images/min.png" alt="Mini Ninja" />
+    
+    <img src="./images/title-pic.png" alt="Times Table Ninja" />
+  </div>
+</section>
+
   
 <!-- BABY NINJAS -->
 <section id="baby-screen" class="center" style="display:none;">
