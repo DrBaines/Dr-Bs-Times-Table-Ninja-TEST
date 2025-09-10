@@ -410,8 +410,6 @@ html, body {
   flex-wrap: nowrap;
 }
 
-.front-images img { width: auto; height: auto; }
-
 /* Explicit fixed heights (keeps them neat) */
 .front-images img.ninja-baby  { height: 70px; }
 .front-images img.ninja-mini  { height: 100px; }
