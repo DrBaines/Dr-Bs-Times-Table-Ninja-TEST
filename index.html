@@ -78,109 +78,82 @@
   <!-- NINJA -->
   <section id="ninja-screen" style="display:none;">
     <h2 class="subtitle center">Ninja Belts</h2>
+<div class="belt-grid">
+  <button class="belt-btn white"    onclick="startWhiteBelt()">
+    <div class="belt-btn-title">White Belt</div>
+    <div class="belt-btn-desc">3× &amp; 4× — 50 Q — 5 min</div>
+  </button>
 
-    <div class="belt-grid">
-      <!-- 50Q belts -->
-      <div class="belt-card white">
-        <div class="belt-name">White Belt</div>
-        <div class="belt-desc">3× &amp; 4×</div>
-        <div class="belt-meta">50 Questions</div>
-        <button class="big-button primary" onclick="startWhiteBelt()">Start White Belt</button>
-      </div>
+  <button class="belt-btn yellow"   onclick="startYellowBelt()">
+    <div class="belt-btn-title">Yellow Belt</div>
+    <div class="belt-btn-desc">4× &amp; 6× — 50 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card yellow">
-        <div class="belt-name">Yellow Belt</div>
-        <div class="belt-desc">4× &amp; 6×</div>
-        <div class="belt-meta">50 Questions</div>
-        <button class="big-button primary" onclick="startYellowBelt()">Start Yellow Belt</button>
-      </div>
+  <button class="belt-btn orange"   onclick="startOrangeBelt()">
+    <div class="belt-btn-title">Orange Belt</div>
+    <div class="belt-btn-desc">2–6× — 50 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card orange">
-        <div class="belt-name">Orange Belt</div>
-        <div class="belt-desc">2×–6×</div>
-        <div class="belt-meta">50 Questions</div>
-        <button class="big-button primary" onclick="startOrangeBelt()">Start Orange Belt</button>
-      </div>
+  <button class="belt-btn green"    onclick="startGreenBelt()">
+    <div class="belt-btn-title">Green Belt</div>
+    <div class="belt-btn-desc">4× &amp; 8× — 50 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card green">
-        <div class="belt-name">Green Belt</div>
-        <div class="belt-desc">4× &amp; 8×</div>
-        <div class="belt-meta">50 Questions</div>
-        <button class="big-button primary" onclick="startGreenBelt()">Start Green Belt</button>
-      </div>
+  <button class="belt-btn blue"     onclick="startBlueBelt()">
+    <div class="belt-btn-title">Blue Belt</div>
+    <div class="belt-btn-desc">7× &amp; 8× — 50 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card blue">
-        <div class="belt-name">Blue Belt</div>
-        <div class="belt-desc">7× &amp; 8×</div>
-        <div class="belt-meta">50 Questions</div>
-        <button class="big-button primary" onclick="startBlueBelt()">Start Blue Belt</button>
-      </div>
+  <button class="belt-btn pink"     onclick="startPinkBelt()">
+    <div class="belt-btn-title">Pink Belt</div>
+    <div class="belt-btn-desc">7× &amp; 9× — 50 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card pink">
-        <div class="belt-name">Pink Belt</div>
-        <div class="belt-desc">7× &amp; 9×</div>
-        <div class="belt-meta">50 Questions</div>
-        <button class="big-button primary" onclick="startPinkBelt()">Start Pink Belt</button>
-      </div>
+  <button class="belt-btn purple"   onclick="startPurpleBelt()">
+    <div class="belt-btn-title">Purple Belt</div>
+    <div class="belt-btn-desc">2–10× — 50 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card purple">
-        <div class="belt-name">Purple Belt</div>
-        <div class="belt-desc">2×–10× (mixed)</div>
-        <div class="belt-meta">50 Questions</div>
-        <button class="big-button primary" onclick="startPurpleBelt()">Start Purple Belt</button>
-      </div>
+  <button class="belt-btn red"      onclick="startRedBelt()">
+    <div class="belt-btn-title">Red Belt</div>
+    <div class="belt-btn-desc">2–10× — 100 Q — 5 min</div>
+  </button>
 
-      <!-- 100Q belts -->
-      <div class="belt-card red">
-        <div class="belt-name">Red Belt</div>
-        <div class="belt-desc">2×–10× (mixed)</div>
-        <div class="belt-meta">100 Questions</div>
-        <button class="big-button primary" onclick="startRedBelt()">Start Red Belt</button>
-      </div>
+  <button class="belt-btn black"    onclick="startBlackBelt()">
+    <div class="belt-btn-title">Black Belt</div>
+    <div class="belt-btn-desc">2–12× — 100 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card black">
-        <div class="belt-name">Black Belt</div>
-        <div class="belt-desc">2×–12× (mixed)</div>
-        <div class="belt-meta">100 Questions</div>
-        <button class="big-button primary" onclick="startBlackBelt()">Start Black Belt</button>
-      </div>
+  <button class="belt-btn bronze"   onclick="startBronzeBelt()">
+    <div class="belt-btn-title">Bronze Belt</div>
+    <div class="belt-btn-desc">2–12× &amp; Missing Numbers — 100 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card bronze">
-        <div class="belt-name">Bronze Belt</div>
-        <div class="belt-desc">Missing-number mix</div>
-        <div class="belt-meta">100 Questions</div>
-        <button class="big-button primary" onclick="startBronzeBelt()">Start Bronze Belt</button>
-      </div>
+  <button class="belt-btn silver"   onclick="startSilverBelt()">
+    <div class="belt-btn-title">Silver Belt</div>
+    <div class="belt-btn-desc">Powers of 10 (10s) — 100 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card silver">
-        <div class="belt-name">Silver Belt</div>
-        <div class="belt-desc">×10 numbers (exps 0–1)</div>
-        <div class="belt-meta">100 Questions</div>
-        <button class="big-button primary" onclick="startSilverBelt()">Start Silver Belt</button>
-      </div>
+  <!-- If you also have Gold / Platinum / Obsidian belts, include them similarly: -->
+  <!--
+  <button class="belt-btn gold"     onclick="startGoldBelt()">
+    <div class="belt-btn-title">Gold Belt</div>
+    <div class="belt-btn-desc">10s &amp; Missing-numbers — 100 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card gold">
-        <div class="belt-name">Gold Belt</div>
-        <div class="belt-desc">Missing-number ×10 (exps 0–1)</div>
-        <div class="belt-meta">100 Questions</div>
-        <button class="big-button primary" onclick="startGoldBelt()">Start Gold Belt</button>
-      </div>
+  <button class="belt-btn platinum" onclick="startPlatinumBelt()">
+    <div class="belt-btn-title">Platinum Belt</div>
+    <div class="belt-btn-desc">Harder 10s — 100 Q — 5 min</div>
+  </button>
 
-      <div class="belt-card platinum">
-        <div class="belt-name">Platinum Belt</div>
-        <div class="belt-desc">×10 numbers (exps 0–2)</div>
-        <div class="belt-meta">100 Questions</div>
-        <button class="big-button primary" onclick="startPlatinumBelt()">Start Platinum Belt</button>
-      </div>
+  <button class="belt-btn obsidian" onclick="startObsidianBelt()">
+    <div class="belt-btn-title">Obsidian Belt</div>
+    <div class="belt-btn-desc">Harder 10s &amp; Missing-numbers — 100 Q — 5 min</div>
+  </button>
+  -->
+</div>
 
-      <div class="belt-card obsidian">
-        <div class="belt-name">Obsidian Belt</div>
-        <div class="belt-desc">Missing-number ×10 (exps 0–2)</div>
-        <div class="belt-meta">100 Questions</div>
-        <button class="big-button primary" onclick="startObsidianBelt()">Start Obsidian Belt</button>
-      </div>
-    </div>
-
+  
     <div class="center" style="margin:20px 0 40px;">
       <button class="big-button" onclick="goHome()">Back</button>
     </div>
