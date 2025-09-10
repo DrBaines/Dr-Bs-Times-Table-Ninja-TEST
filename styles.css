@@ -269,7 +269,59 @@ body {
 .belt-card.gold     { border-color:#f59e0b; }
 .belt-card.platinum { border-color:#64748b; }
 .belt-card.obsidian { border-color:#111; }
+/* === Belt buttons (replace card+button with a single coloured button) === */
+.belt-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 2px solid rgba(0,0,0,0.15);
+  border-radius: 16px;
+  padding: 16px 18px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  transition: transform 0.03s ease, filter 0.15s ease;
+}
 
+.belt-btn:active { transform: scale(0.99); }
+.belt-btn:focus { outline: 3px solid #7aa7ff; outline-offset: 3px; }
+.belt-btn:hover { filter: brightness(0.98); }
+
+.belt-btn .belt-btn-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+.belt-btn .belt-btn-desc {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* Reuse the same colours as .belt-card by extending selectors */
+.belt-card.white,  .belt-btn.white  { background: #ffffff; border-color: rgba(0,0,0,0.12); }
+.belt-card.yellow, .belt-btn.yellow { background: #fff59d; }
+.belt-card.orange, .belt-btn.orange { background: #ffcc80; }
+.belt-card.green,  .belt-btn.green  { background: #a5d6a7; }
+.belt-card.blue,   .belt-btn.blue   { background: #90caf9; }
+.belt-card.pink,   .belt-btn.pink   { background: #f8bbd0; }
+.belt-card.purple, .belt-btn.purple { background: #d1c4e9; }
+.belt-card.red,    .belt-btn.red    { background: #ef9a9a; }
+.belt-card.black,  .belt-btn.black  { background: #e0e0e0; }
+.belt-card.bronze, .belt-btn.bronze { background: #e7c9a6; }
+.belt-card.silver, .belt-btn.silver { background: #d9d9d9; }
+.belt-card.gold,   .belt-btn.gold   { background: #ffe8a3; }
+.belt-card.platinum, .belt-btn.platinum { background: #e8edf3; }
+.belt-card.obsidian, .belt-btn.obsidian { background: #1f2937; color: #f3f4f6; }
+
+/* Title colour tweaks for darker backgrounds */
+.belt-btn.green .belt-btn-title    { color: #0b3d0b; }
+.belt-btn.blue .belt-btn-title     { color: #0a2a5a; }
+.belt-btn.pink .belt-btn-title     { color: #5a0a35; }
+.belt-btn.purple .belt-btn-title   { color: #3a2a6a; }
+.belt-btn.red .belt-btn-title      { color: #5a0a0a; }
+.belt-btn.black .belt-btn-title    { color: #111; }
+.belt-btn.bronze .belt-btn-title   { color: #5c4428; }
+.belt-btn.silver .belt-btn-title   { color: #222; }
+.belt-btn.obsidian .belt-btn-title { color: #fff; }
 /* Layout tweaks (desktop side dock) */
 @media (max-width: 1024px) { :root{ --pad-right: 120px; } #quiz-container{ max-width: 920px; } }
 @media (max-width: 834px)  { :root{ --pad-right: 80px; }  #quiz-container{ max-width: 860px; } }
