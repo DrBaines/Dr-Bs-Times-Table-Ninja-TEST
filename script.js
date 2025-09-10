@@ -84,7 +84,7 @@ function suppressOSK(aEl, enable) {
 
 /* ====== Navigation ====== */
 function setScreen(id) {
-  const screens = ["home-screen","mini-screen","ninja-screen","quiz-screen","quiz-container"];
+  const screens = ["home-screen","mini-screen","baby-screen","ninja-screen","quiz-screen","quiz-container"];
   let target = id;
   if (!document.getElementById(target)) {
     if (id === "quiz-screen" && document.getElementById("quiz-container")) target = "quiz-container";
@@ -101,24 +101,123 @@ function setScreen(id) {
   }
   try { document.body.setAttribute("data-screen", target); } catch {}
 }
+
+/* ====== Home button highlight ====== */
+function setHomeChoice(choice){
+  ["btn-mini","btn-ninja","btn-baby"].forEach(id=>{
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle("active", id === `btn-${choice}`);
+  });
+}  
+
 function goHome(){
   const s = $("score"); if (s) s.innerHTML = "";
   const q = $("question"); if (q){ q.textContent=""; q.style.display=""; }
   const a = $("answer"); if (a){ a.value=""; a.style.display=""; suppressOSK(a, false); }
   setScreen("home-screen");
 }
-function goMini(){
+
+function goBaby(){
+  setHomeChoice("baby");
+  buildBabyTableButtons();
+  setScreen("baby-screen");
+}
+
+function goMini(){setHomeChoice("mini");
   buildTableButtons();
   setScreen("mini-screen");
 }
 function goNinja(){
+  setHomeChoice("ninja");
   setScreen("ninja-screen");
 }
-  
+
+
+
 window.setScreen = setScreen;
 window.goHome = goHome;
 window.goMini = goMini;
 window.goNinja = goNinja;
+
+/* ====== Baby Ninjas (like Mini, but 30 Q and i ∈ 0..12) ====== */
+let selectedBabyBase = 2;
+
+function buildBabyTableButtons(){
+  const wrap = $("baby-table-choices");
+  if (!wrap) return;
+  let html = "";
+  for (let b = 2; b <= 12; b++){
+    const isSel = (b === selectedBabyBase) ? " selected" : "";
+    html += `<button class="table-btn${isSel}" onclick="selectBabyTable(${b})">${b}×</button>`;
+  }
+  wrap.innerHTML = html;
+}
+
+function selectBabyTable(b){
+  selectedBabyBase = clamp(b, 2, 12);
+  const wrap = $("baby-table-choices");
+  if (!wrap) return;
+  [...wrap.querySelectorAll(".table-btn")].forEach(btn=>{
+    const val = parseInt(btn.textContent, 10);
+    btn.classList.toggle("selected", val === selectedBabyBase);
+  });
+}
+
+/* Build 30 questions total:
+   - First 10: a × i  (i ∈ 0..12)
+   - Next 10: i × a   (i ∈ 0..12)
+   - Last 10: random mix of the two (i ∈ 0..12)
+*/
+function buildBabyQuestions(base, total = 30){
+  const pickI = () => randInt(0, 12);
+
+  const set1 = [];
+  for (let n = 0; n < 10; n++){
+    const i = pickI();
+    set1.push({ q: `${base} × ${i}`, a: base * i });
+  }
+  const set2 = [];
+  for (let n = 0; n < 10; n++){
+    const i = pickI();
+    set2.push({ q: `${i} × ${base}`, a: base * i });
+  }
+  shuffle(set1);
+  shuffle(set2);
+
+  const mix = [];
+  for (let n = 0; n < 10; n++){
+    const i = pickI();
+    if (Math.random() < 0.5){
+      mix.push({ q: `${base} × ${i}`, a: base * i });
+    } else {
+      mix.push({ q: `${i} × ${base}`, a: base * i });
+    }
+  }
+  shuffle(mix);
+
+  return [...set1, ...set2, ...mix].slice(0, total);
+}
+
+function goBaby(){
+  buildBabyTableButtons();
+  setScreen("baby-screen");
+}
+
+function startBabyQuiz(){
+  modeLabel = `Baby ${selectedBabyBase}×`;
+  quizSeconds = QUIZ_SECONDS_DEFAULT; // 5 minutes
+  // Ensure time tracking starts (your preflight also sets this; double-safe)
+  if (typeof quizStartTime !== "undefined") { quizStartTime = Date.now(); }
+  preflightAndStart(buildBabyQuestions(selectedBabyBase, 30));
+}
+
+/* Expose to onclick */
+window.goBaby = goBaby;
+window.startBabyQuiz = startBabyQuiz;
+window.buildBabyTableButtons = buildBabyTableButtons;
+window.selectBabyTable = selectBabyTable;
+
 
 /* ====== Mini Tests ====== */
 let selectedBase = 2;
