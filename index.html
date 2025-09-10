@@ -29,6 +29,13 @@
       <button id="btn-mini" class="choice" onclick="goMini()">Mini Tests</button>
       <button id="btn-ninja" class="choice" onclick="goNinja()">Ninja Belt</button>
     </div>
+    
+<div class="choice-buttons" role="group" aria-label="Main choices">
+  <button id="btn-mini" class="choice" onclick="goMini()">Mini Tests</button>
+  <button id="btn-ninja" class="choice" onclick="goNinja()">Ninja Belt</button>
+  <!-- NEW: Baby Ninjas -->
+  <button id="btn-baby" class="choice" onclick="goBaby()">Baby Ninjas</button>
+</div>
 
     <!-- Title image under the buttons -->
     <div class="home-hero">
@@ -40,7 +47,25 @@
   />
     </div>
   </section>
+  
+<!-- BABY NINJAS -->
+<section id="baby-screen" class="center" style="display:none;">
+  <h2 class="subtitle">Dr B's Times Table Ninja — Baby Ninjas</h2>
+  <div class="info-text">
+    Choose a single times table (2–12). 30 questions in 5 minutes.<br/>
+    Includes zero facts: i ranges from 0 to 12.
+  </div>
 
+  <div id="baby-table-choices" class="choice-buttons" role="group" aria-label="Baby times table choices">
+    <!-- buttons 2×–12× injected by JS -->
+  </div>
+
+  <div class="choice-buttons">
+    <button class="big-button primary" onclick="startBabyQuiz()">Start Baby Quiz</button>
+    <button class="big-button" onclick="goHome()">Back</button>
+  </div>
+</section>
+  
   <!-- MINI -->
   <section id="mini-screen" class="center" style="display:none;">
     <h2 class="subtitle">Dr B's Times Table Ninja — Mini Tests</h2>
