@@ -409,11 +409,6 @@ html, body {
   flex-wrap: nowrap; /* keep them on one row */
 }
 
-.front-images img {
-  height: auto;
-  max-height: 140px; /* limit height so all fit on iPad portrait */
-  width: auto;
-}
 
 /* Sizes for each image */
 .ninja-baby {
