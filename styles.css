@@ -400,25 +400,32 @@ html, body {
   color: #fff;
   border-color: #222;
 }
+/* ===== Front images: Baby, Mini, Ninja (responsive, ordered sizes) ===== */
 .front-images {
   margin-top: 20px;
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* bottom-align them */
-  gap: 16px;
-  flex-wrap: nowrap; /* keep them in one row */
+  align-items: flex-end;        /* bottoms line up */
+  gap: clamp(8px, 2vw, 20px);   /* scales gap */
+  flex-wrap: nowrap;            /* keep one row */
 }
 
-/* Maintain relative sizes */
-.ninja-baby {
-  height: 100px; /* fixed height */
-  width: auto;
+/* reset any earlier image rules */
+.front-images img { width: auto; height: auto; max-width: none; max-height: none; }
+
+/* Use clamp so sizes scale with viewport but stay bounded */
+.front-images img.ninja-baby  { height: clamp(72px, 10vw, 110px); }
+.front-images img.ninja-mini  { height: clamp(92px, 13vw, 140px); }
+.front-images img.ninja-main  { height: clamp(112px, 16vw, 170px); }
+
+/* iPad portrait fine-tune (768–834px wide) */
+@media (max-width: 834px) and (min-width: 700px) and (orientation: portrait) {
+  .front-images img.ninja-baby  { height: 95px; }
+  .front-images img.ninja-mini  { height: 125px; }
+  .front-images img.ninja-main  { height: 155px; }
 }
-.ninja-mini {
-  height: 140px; /* bigger */
-  width: auto;
-}
-.ninja-main {
-  height: 180px; /* biggest */
-  width: auto;
+
+/* If the viewport ever gets too narrow, allow wrapping gracefully */
+@media (max-width: 420px) {
+  .front-images { flex-wrap: wrap; }
 }
