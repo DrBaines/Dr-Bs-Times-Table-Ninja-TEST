@@ -408,7 +408,11 @@ html, body {
   gap: 12px; /* tighter gap so they fit on iPad portrait */
   flex-wrap: nowrap; /* keep them on one row */
 }
-
+.front-images img {
+  height: auto;
+  max-height: 160px; /* limit height so all fit on iPad portrait */
+  width: auto;
+}
 
 /* Sizes for each image */
 .ninja-baby {
