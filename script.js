@@ -3,16 +3,14 @@
    - Title: "Dr B's Times Table Ninja — {Belt}"
    - Print/Save button (captures name, score, answers) + date dd/mm/yy
    - Answers: 5 columns; wrong = red; Quit button below answers
-   - Keypad + keyboard; hidden timer; offline queue stubs
+   - Keypad + keyboard; hidden timer;
 */
 
 /* ====== Config ====== */
-const SHEET_ENDPOINT = "";   // set your Apps Script web app URL if needed
-const SHEET_SECRET   = "";   // secret if your endpoint requires it
+
 
 const QUIZ_SECONDS_DEFAULT = 300; // 5 minutes (hidden timer) 
-const QUEUE_KEY = "tttQueueV1";
-const NAME_KEY  = "tttName";
+
 
 /* ====== State ====== */
 let modeLabel = "";
@@ -110,21 +108,11 @@ function goHome(){
   setScreen("home-screen");
 }
 function goMini(){
-  const nameInput = $("home-username");
-  if (nameInput){
-    const val = (nameInput.value || "").trim();
-    if (val){ localStorage.setItem(NAME_KEY, val); }
-  }
-  buildTableButtons();
+   buildTableButtons();
   setScreen("mini-screen");
 }
 function goNinja(){
-  const nameInput = $("home-username");
-  if (nameInput){
-    const val = (nameInput.value || "").trim();
-    if (val){ localStorage.setItem(NAME_KEY, val); }
-  }
-  setScreen("ninja-screen");
+    setScreen("ninja-screen");
 }
 window.setScreen = setScreen;
 window.goHome = goHome;
@@ -343,7 +331,7 @@ function handleKey(val){
   if (val==="back") { a.value = a.value.slice(0,-1); a.dispatchEvent(new Event("input",{bubbles:true})); return; }
   if (val==="enter"){ safeSubmit(); return; }
   if (/^\d$/.test(val)){
-    if (a.value.length < 15){ a.value += val; a.dispatchEvent(new Event("input",{bubbles:true})); }
+    if (a.value.length < 10){ a.value += val; a.dispatchEvent(new Event("input",{bubbles:true})); }
     try{ a.setSelectionRange(a.value.length,a.value.length); }catch{}
   }
 }
@@ -353,12 +341,12 @@ function attachKeyboard(a){
     if (IS_TOUCH) return; // on touch, use on-screen keypad only
     const quiz = $("quiz-container"); if(!quiz || quiz.style.display==="none" || ended) return;
     if (!a || a.style.display==="none") return;
-    if (/^\d$/.test(e.key)){ e.preventDefault(); if (a.value.length < 15) a.value += e.key; }
+    if (/^\d$/.test(e.key)){ e.preventDefault(); if (a.value.length < 10) a.value += e.key; }
     else if (e.key==="Backspace" || e.key==="Delete"){ e.preventDefault(); a.value = a.value.slice(0,-1); }
     else if (e.key==="Enter"){ e.preventDefault(); safeSubmit(); }
   };
   document.addEventListener("keydown", desktopKeyHandler);
-  if (a) a.addEventListener("input", ()=>{ a.value = a.value.replace(/[^\d]/g,"").slice(0,15); });
+  if (a) a.addEventListener("input", ()=>{ a.value = a.value.replace(/[^\d]/g,"").slice(0,10); });
 }
 function safeSubmit(){
   const now = Date.now(); if (now < submitLockedUntil) return; submitLockedUntil = now + 200;
@@ -555,7 +543,8 @@ function printResults(){
     const u = (userAnswers[i] === "" ? NaN : Number(userAnswers[i]));
     if (!Number.isNaN(u) && u === c) correct++;
   }
-  const username = (localStorage.getItem(NAME_KEY) || "").trim() || "Player";
+  const nameInput = $("home-username");
+const username = nameInput ? (nameInput.value || "Player").trim() : "Player";
   const today = formatToday();
   const answersHTML = buildAnswersHTML();
   const belt = modeLabel || "Quiz";
@@ -689,9 +678,7 @@ window.showAnswers = showAnswers;
 window.showAnswers = showAnswers;
 
 
-/* ====== Queue (stubs) ====== */
-function getQueue(){ try{ return JSON.parse(localStorage.getItem(QUEUE_KEY)||"[]"); }catch{ return []; } }
-function setQueue(arr){ try{ localStorage.setItem(QUEUE_KEY, JSON.stringify(arr)); }catch{} }
+
 
 /* ====== Belt start functions (counts per spec) ====== */
 function startWhiteBelt(){    modeLabel="White Belt";    quizSeconds=QUIZ_SECONDS_DEFAULT; preflightAndStart(buildMixedBases([3,4],50),            {theme:"white"}); }
@@ -718,3 +705,5 @@ window.startPurpleBelt=startPurpleBelt; window.startRedBelt=startRedBelt;
 window.startBlackBelt=startBlackBelt; window.startBronzeBelt=startBronzeBelt;
 window.startSilverBelt=startSilverBelt; window.startGoldBelt=startGoldBelt;
 window.startPlatinumBelt=startPlatinumBelt; window.startObsidianBelt=startObsidianBelt;
+
+Add CSP Report-Only and secure cookie settings
