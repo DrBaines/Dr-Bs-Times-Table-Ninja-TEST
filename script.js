@@ -512,12 +512,12 @@ function createKeypad(){
       <button class="pad-btn key-0" data-k="0">0</button>
       <button class="pad-btn" data-k=".">.</button>
     </div>`;
-  host.style.display="block"; 
+  host.style.display="block";
   host.style.pointerEvents="auto";
   host.querySelectorAll(".pad-btn").forEach(btn=>{
     btn.addEventListener("pointerdown",(e)=>{
-      e.preventDefault(); 
-      handleKey(btn.getAttribute("data-k")); 
+      e.preventDefault();
+      handleKey(btn.getAttribute("data-k"));
     },{passive:false});
   });
 }
