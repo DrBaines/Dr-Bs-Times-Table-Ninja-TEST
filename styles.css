@@ -29,7 +29,15 @@ body {
 .stack-mobile { gap: 20px; }
 .name-row { margin: 10px 0 20px; }
 
-.big-input { font-size:44px; padding:18px; width:520px; max-width:92vw; text-align:center; }
+/* Make the desktop/laptop answer box wider */
+.big-input,
+.answer-input {
+  font-size:44px;
+  padding:18px;
+  width:520px;        /* wider for laptop/desktop */
+  max-width:92vw;
+  text-align:center;
+}
 
 .big-button { font-size:28px; padding:16px 26px; cursor:pointer; border:2px solid #222; border-radius:10px; background:#fff; }
 .big-button.primary { background:#4caf50; color:#fff; border-color:#4caf50; }
@@ -41,7 +49,6 @@ body {
 /* ---------- Quiz container ---------- */
 #quiz-title { margin-top:10px; margin-bottom:20px; display:block; }
 .question { font-size: 100px; margin: 0; }  /* margin 0 so it never nudges rows */
-.answer-input { font-size: 100px; width: 340px; text-align: center; margin-top: 0; }
 .timer { font-size: 50px; margin-top: 30px; display:none !important; }
 .score { font-size: 40px; margin-top: 30px; }
 
@@ -72,7 +79,6 @@ body {
   row-gap: 0;
   text-align: left;            /* ⬅️ was "center" */
 }
-
 
 /* Place core elements into explicit rows */
 #question { 
@@ -386,11 +392,11 @@ html, body {
   box-shadow: 0 8px 28px rgba(0,0,0,0.12);
 }
 
-/* iPad portrait widths (older iPad 768px, Air 820px, Pro 834px) */
+/* iPad portrait: answer box big, keypad bottom */
 @media (hover: none) and (pointer: coarse) and (min-width: 700px) and (max-width: 900px) and (orientation: portrait) {
   .answer-input {
     width: 950px;     /* enough for 8 digits */
-    max-width: 98vw;  /* prevent overflow on narrow viewports */
+    max-width: 90vw;  /* prevent overflow on narrow viewports */
     font-size: 84px;  /* slightly smaller so longer numbers fit */
   }
   #quiz-container {
@@ -398,29 +404,11 @@ html, body {
   }
 }
 
-/* iPad landscape widths (typically 1024px wide) */
-@media (hover: none) and (pointer: coarse) and (min-width: 900px) and (max-width: 1200px) and (orientation: landscape) {
-  .answer-input {
-    width: 800px;     /* slightly less wide for landscape, still fits 8 digits */
-    max-width: 90vw;
-    font-size: 70px;  /* slightly smaller font for landscape fit */
-  }
-  #quiz-container {
-    padding-bottom: 360px; /* ensure space for keypad */
-  }
-}
-
-.choice.active {
-  background: #444;
-  color: #fff;
-  border-color: #222;
-}
-
-/* iPad/tablet landscape: place answer box to the right of the question */
+/* iPad landscape: answer box to the right of the question and not under keypad */
 @media (hover: none) and (pointer: coarse) and (min-width: 900px) and (max-width: 1200px) and (orientation: landscape) {
   .question-col {
     display: grid;
-    grid-template-columns: 1fr 1fr;   /* two columns: question | answer */
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: var(--qband-tablet) auto auto;
     grid-template-areas:
       "question answer"
@@ -445,10 +433,19 @@ html, body {
     grid-area: timer;
   }
   .answer-input {
-    width: 500px;
+    width: 500px; /* wide enough for 8 digits, adjust as needed */
     max-width: 40vw;
     font-size: 70px;
   }
+  #quiz-container {
+    padding-bottom: 0; /* not needed when input is not under keypad */
+  }
+}
+
+.choice.active {
+  background: #444;
+  color: #fff;
+  border-color: #222;
 }
 /* ===== FRONT IMAGES — FORCE SIZES & ORDER (final override) ===== */
 .front-images {
