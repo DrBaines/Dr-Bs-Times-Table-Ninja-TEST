@@ -491,7 +491,6 @@ function buildObsidianQuestions(total){
 }
 
 /* ====== Keypad + keyboard ====== */
-/* ====== Keypad + keyboard ====== */
 function createKeypad(){
   const host = $("answer-pad"); if(!host) return;
   host.innerHTML = `
@@ -499,7 +498,7 @@ function createKeypad(){
       <button class="pad-btn" data-k="7">7</button>
       <button class="pad-btn" data-k="8">8</button>
       <button class="pad-btn" data-k="9">9</button>
-      <button class="pad-btn pad-back" data-k="back">⌫</button>
+      <button class="pad-btn" data-k=".">.</button>
 
       <button class="pad-btn" data-k="4">4</button>
       <button class="pad-btn" data-k="5">5</button>
@@ -511,7 +510,7 @@ function createKeypad(){
       <button class="pad-btn" data-k="3">3</button>
 
       <button class="pad-btn key-0" data-k="0">0</button>
-      <button class="pad-btn" data-k=".">.</button>
+      <button class="pad-btn pad-back" data-k="back">⌫</button>
     </div>`;
   host.style.display="block"; 
   host.style.pointerEvents="auto";
