@@ -395,12 +395,12 @@ html, body {
 /* iPad portrait: answer box big, keypad bottom */
 @media (hover: none) and (pointer: coarse) and (min-width: 700px) and (max-width: 900px) and (orientation: portrait) {
   .answer-input {
-    width: 950px;     /* enough for 8 digits */
-    max-width: 90vw;  /* prevent overflow on narrow viewports */
-    font-size: 84px;  /* slightly smaller so longer numbers fit */
+    width: 600px;     /* narrower for portrait */
+    max-width: 98vw;
+    font-size: 84px;
   }
   #quiz-container {
-    padding-bottom: 360px; /* ensure space for keypad */
+    padding-bottom: 360px;
   }
 }
 
