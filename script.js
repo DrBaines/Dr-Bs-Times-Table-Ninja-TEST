@@ -510,6 +510,7 @@ function createKeypad(){
       <button class="pad-btn" data-k="3">3</button>
 
       <button class="pad-btn key-0" data-k="0">0</button>
+      <button class="pad-btn" data-k=".">.</button>
       <button class="pad-btn pad-back" data-k="back">⌫</button>
     </div>`;
   host.style.display="block"; host.style.pointerEvents="auto";
@@ -517,9 +518,11 @@ function createKeypad(){
     btn.addEventListener("pointerdown",(e)=>{ e.preventDefault(); handleKey(btn.getAttribute("data-k")); },{passive:false});
   });
 }
+
 function destroyKeypad(){
   const host=$("answer-pad"); if(!host) return; host.innerHTML=""; host.style.display=""; host.style.pointerEvents="";
 }
+
 function handleKey(val){
   const a=$("answer"); if(!a || ended) return;
   if (val==="clear"){ a.value=""; a.dispatchEvent(new Event("input",{bubbles:true})); return; }
@@ -528,8 +531,16 @@ function handleKey(val){
   if (/^\d$/.test(val)){
     if (a.value.length < 10){ a.value += val; a.dispatchEvent(new Event("input",{bubbles:true})); }
     try{ a.setSelectionRange(a.value.length,a.value.length); }catch{}
+    return;
+  }
+  if (val==="." && a.value.indexOf(".")===-1 && a.value.length < 10){
+    a.value += "."; a.dispatchEvent(new Event("input",{bubbles:true}));
+    try{ a.setSelectionRange(a.value.length,a.value.length); }catch{}
+    return;
   }
 }
+
+// Allow decimal via keyboard in attachKeyboard()
 function attachKeyboard(a){
   if (desktopKeyHandler){ document.removeEventListener("keydown", desktopKeyHandler); desktopKeyHandler=null; }
   desktopKeyHandler = (e)=>{
@@ -539,9 +550,18 @@ function attachKeyboard(a){
     if (/^\d$/.test(e.key)){ e.preventDefault(); if (a.value.length < 10) a.value += e.key; }
     else if (e.key==="Backspace" || e.key==="Delete"){ e.preventDefault(); a.value = a.value.slice(0,-1); }
     else if (e.key==="Enter"){ e.preventDefault(); safeSubmit(); }
+    else if (e.key==="." && a.value.indexOf(".")===-1 && a.value.length < 10) { e.preventDefault(); a.value += "."; }
   };
   document.addEventListener("keydown", desktopKeyHandler);
-  if (a) a.addEventListener("input", ()=>{ a.value = a.value.replace(/[^\d]/g,"").slice(0,10); });
+  if (a) a.addEventListener("input", ()=>{
+    // Only allow digits and at most one decimal point
+    let v = a.value.replace(/[^0-9.]/g,"");
+    const firstDot = v.indexOf(".");
+    if (firstDot !== -1) {
+      v = v.substring(0, firstDot + 1) + v.substring(firstDot + 1).replace(/\./g, "");
+    }
+    a.value = v.slice(0,10);
+  });
 }
 function safeSubmit(){
   const now = Date.now(); if (now < submitLockedUntil) return; submitLockedUntil = now + 200;
