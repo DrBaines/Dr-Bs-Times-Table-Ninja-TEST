@@ -369,6 +369,8 @@ function buildGoldQuestions(total){
   }
   return shuffle(out).slice(0,total);
 }
+
+
 function buildPlatinumQuestions(total){
   const out = [];
   for (let i=0;i<total;i++){
@@ -376,7 +378,7 @@ function buildPlatinumQuestions(total){
     if (t===1 || t===2) {
       // Regular multiplication
       const exps = [0,1,2];
-      const A=randInt(2,12), B=randInt(1,10);
+      const A=randInt(2,12), B=randInt(2,12);
       const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
       const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
       if (t === 1)
@@ -384,34 +386,22 @@ function buildPlatinumQuestions(total){
       else
           out.push({ q:`${bigB} × ${bigA}`, a:prod });
     } else {
-      // Division, sometimes <1, sometimes ≥1
-      // (10^e × a × b) ÷ a^f, with e,f randomized for variety
+      // Division: (10^exp1 × a × b) ÷ (10^exp2 × a)
+      const exps = [0,1,2];
+      let exp1, exp2;
       const isLessThan1 = Math.random() < 0.5;
-      let e, f, A, B;
-      A = randInt(2, 12);
-      B = randInt(1, 10);
       if (isLessThan1) {
-        if (Math.random() < 0.5) {
-          e = randInt(0, 1);
-          f = 2;
-        } else {
-          e = 0;
-          f = randInt(1, 2);
-        }
+        exp1 = randInt(0,1);
+        exp2 = randInt(exp1+1,2);
       } else {
-        if (Math.random() < 0.5) {
-          e = randInt(1, 2);
-          f = 0;
-        } else {
-          e = 2;
-          f = randInt(0, 1);
-        }
+        exp2 = randInt(0,1);
+        exp1 = randInt(exp2,2);
       }
-      const numerator = Math.pow(10, e) * A * B;
-      const denominator = Math.pow(A, f);
+      const a = randInt(2,12), b = randInt(2,12);
+      const numerator = Math.pow(10, exp1) * a * b;
+      const denominator = Math.pow(10, exp2) * a;
       const answer = numerator / denominator;
-      const question = `${numerator} ÷ ${denominator}`;
-      out.push({ q: question, a: answer });
+      out.push({ q: `${numerator} ÷ ${denominator}`, a: answer });
     }
   }
   return shuffle(out).slice(0,total);
@@ -424,7 +414,7 @@ function buildObsidianQuestions(total){
   for (let i=0;i<half;i++){
     const t=(i%4)+1;
     if (t===1 || t===2) {
-      const A=randInt(2,12), B=randInt(1,10);
+      const A=randInt(2,12), B=randInt(2,12);
       const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
       const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
       if (t===1)
@@ -432,35 +422,23 @@ function buildObsidianQuestions(total){
       else
         out.push({ q:`${bigA} × ___ = ${prod}`, a:bigB });
     } else if (t===3) {
-      // Division, sometimes <1, sometimes ≥1
+      // Division: (10^exp1 × a × b) ÷ (10^exp2 × a)
+      let exp1, exp2;
       const isLessThan1 = Math.random() < 0.5;
-      let e, f, A, B;
-      A = randInt(2, 12);
-      B = randInt(1, 10);
       if (isLessThan1) {
-        if (Math.random() < 0.5) {
-          e = randInt(0, 1);
-          f = 2;
-        } else {
-          e = 0;
-          f = randInt(1, 2);
-        }
+        exp1 = randInt(0,1);
+        exp2 = randInt(exp1+1,2);
       } else {
-        if (Math.random() < 0.5) {
-          e = randInt(1, 2);
-          f = 0;
-        } else {
-          e = 2;
-          f = randInt(0, 1);
-        }
+        exp2 = randInt(0,1);
+        exp1 = randInt(exp2,2);
       }
-      const numerator = Math.pow(10, e) * A * B;
-      const denominator = Math.pow(A, f);
+      const a = randInt(2,12), b = randInt(2,12);
+      const numerator = Math.pow(10, exp1) * a * b;
+      const denominator = Math.pow(10, exp2) * a;
       const answer = numerator / denominator;
-      const question = `${numerator} ÷ ${denominator}`;
-      out.push({ q: question, a: answer });
+      out.push({ q: `${numerator} ÷ ${denominator}`, a: answer });
     } else {
-      const A=randInt(2,12), B=randInt(1,10);
+      const A=randInt(2,12), B=randInt(2,12);
       const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
       const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
       out.push({ q:`${prod} ÷ ___ = ${bigB}`, a:bigA });
@@ -469,7 +447,7 @@ function buildObsidianQuestions(total){
   for (let i=half;i<total;i++){
     const t=randInt(1,6);
     if (t===1 || t===2) {
-      const A=randInt(2,12), B=randInt(1,10);
+      const A=randInt(2,12), B=randInt(2,12);
       const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
       const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
       if (t===1)
@@ -477,45 +455,33 @@ function buildObsidianQuestions(total){
       else
         out.push({ q:`${bigA} × ___ = ${prod}`, a:bigB });
     } else if (t===3) {
-      // Division, sometimes <1, sometimes ≥1
+      // Division: (10^exp1 × a × b) ÷ (10^exp2 × a)
+      let exp1, exp2;
       const isLessThan1 = Math.random() < 0.5;
-      let e, f, A, B;
-      A = randInt(2, 12);
-      B = randInt(1, 10);
       if (isLessThan1) {
-        if (Math.random() < 0.5) {
-          e = randInt(0, 1);
-          f = 2;
-        } else {
-          e = 0;
-          f = randInt(1, 2);
-        }
+        exp1 = randInt(0,1);
+        exp2 = randInt(exp1+1,2);
       } else {
-        if (Math.random() < 0.5) {
-          e = randInt(1, 2);
-          f = 0;
-        } else {
-          e = 2;
-          f = randInt(0, 1);
-        }
+        exp2 = randInt(0,1);
+        exp1 = randInt(exp2,2);
       }
-      const numerator = Math.pow(10, e) * A * B;
-      const denominator = Math.pow(A, f);
+      const a = randInt(2,12), b = randInt(2,12);
+      const numerator = Math.pow(10, exp1) * a * b;
+      const denominator = Math.pow(10, exp2) * a;
       const answer = numerator / denominator;
-      const question = `${numerator} ÷ ${denominator}`;
-      out.push({ q: question, a: answer });
+      out.push({ q: `${numerator} ÷ ${denominator}`, a: answer });
     } else if (t===4) {
-      const A=randInt(2,12), B=randInt(1,10);
+      const A=randInt(2,12), B=randInt(2,12);
       const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
       const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
       out.push({ q:`${prod} ÷ ___ = ${bigB}`, a:bigA });
     } else if (t===5) {
-      const A=randInt(2,12), B=randInt(1,10);
+      const A=randInt(2,12), B=randInt(2,12);
       const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
       const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
       out.push({ q:`${bigA} × ${bigB}`, a:prod });
     } else {
-      const A=randInt(2,12), B=randInt(1,10);
+      const A=randInt(2,12), B=randInt(2,12);
       const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
       const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
       out.push({ q:`${bigB} × ${bigA}`, a:prod });
@@ -523,7 +489,6 @@ function buildObsidianQuestions(total){
   }
   return shuffle(out).slice(0,total);
 }
-
 
 /* ====== Keypad + keyboard ====== */
 function createKeypad(){
