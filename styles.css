@@ -415,6 +415,41 @@ html, body {
   color: #fff;
   border-color: #222;
 }
+
+/* iPad/tablet landscape: place answer box to the right of the question */
+@media (hover: none) and (pointer: coarse) and (min-width: 900px) and (max-width: 1200px) and (orientation: landscape) {
+  .question-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;   /* two columns: question | answer */
+    grid-template-rows: var(--qband-tablet) auto auto;
+    grid-template-areas:
+      "question answer"
+      "timer   timer";
+    align-items: center;
+    column-gap: 40px;
+    row-gap: 0;
+    text-align: left;
+    justify-items: start;
+  }
+  #question {
+    grid-area: question;
+    align-self: center;
+    justify-self: end;
+  }
+  #answer {
+    grid-area: answer;
+    align-self: center;
+    justify-self: start;
+  }
+  #timer {
+    grid-area: timer;
+  }
+  .answer-input {
+    width: 500px;
+    max-width: 40vw;
+    font-size: 70px;
+  }
+}
 /* ===== FRONT IMAGES — FORCE SIZES & ORDER (final override) ===== */
 .front-images {
   margin-top: 20px;
