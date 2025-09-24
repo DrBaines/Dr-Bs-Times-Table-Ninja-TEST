@@ -608,6 +608,21 @@ function attachKeyboard(a){
   });
 }
 
+function safeSubmit(){
+  const now = Date.now(); 
+  if (now < submitLockedUntil) return; 
+  submitLockedUntil = now + 200;
+  const a = $("answer"); 
+  if(!a || ended) return;
+  const valStr = a.value.trim(); 
+  userAnswers[currentIndex] = (valStr===""?"":Number(valStr));
+  currentIndex++; 
+  if (currentIndex >= allQuestions.length){ 
+    endQuiz(); 
+    return; 
+  }
+  showQuestion();
+}
 
 /* ====== Timer ====== */
 function startTimer(seconds){
