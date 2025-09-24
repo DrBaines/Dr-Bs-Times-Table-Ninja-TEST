@@ -498,7 +498,8 @@ function createKeypad(){
       <button class="pad-btn" data-k="7" style="grid-area: seven;">7</button>
       <button class="pad-btn" data-k="8" style="grid-area: eight;">8</button>
       <button class="pad-btn" data-k="9" style="grid-area: nine;">9</button>
-      <button class="pad-btn" data-k="." style="grid-area: clear;">.</button>
+      <!-- DELETE goes in top-right (area: clear) -->
+      <button class="pad-btn pad-back" data-k="back" style="grid-area: clear;">⌫</button>
 
       <button class="pad-btn" data-k="4" style="grid-area: four;">4</button>
       <button class="pad-btn" data-k="5" style="grid-area: five;">5</button>
@@ -509,15 +510,17 @@ function createKeypad(){
       <button class="pad-btn" data-k="2" style="grid-area: two;">2</button>
       <button class="pad-btn" data-k="3" style="grid-area: three;">3</button>
 
+      <!-- 0 spans two cells via grid-area: zero (defined twice in your template) -->
       <button class="pad-btn key-0" data-k="0" style="grid-area: zero;">0</button>
-      <button class="pad-btn pad-back" data-k="back" style="grid-area: back;">⌫</button>
+      <!-- DECIMAL goes to the right of 0 (area: back) -->
+      <button class="pad-btn" data-k="." style="grid-area: back;">.</button>
     </div>`;
-  host.style.display="block"; 
+  host.style.display="block";
   host.style.pointerEvents="auto";
   host.querySelectorAll(".pad-btn").forEach(btn=>{
     btn.addEventListener("pointerdown",(e)=>{
-      e.preventDefault(); 
-      handleKey(btn.getAttribute("data-k")); 
+      e.preventDefault();
+      handleKey(btn.getAttribute("data-k"));
     },{passive:false});
   });
 }
