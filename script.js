@@ -819,11 +819,27 @@ function printResults(){
   const answersHTML = buildAnswersHTML();
   const belt = modeLabel || "Quiz";
 
-  // Calculate time taken
-  const elapsedMs = Date.now() - quizStartTime;
-  const elapsedSec = Math.round(elapsedMs / 1000);
-  const minutes = Math.floor(elapsedSec / 60);
-  const seconds = elapsedSec % 60;
+  // Build correct answers HTML
+  let correctHTML = `
+    <div class="answers-grid" style="
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:8px;
+      align-items:start;
+      margin-top:10px;
+    ">
+  `;
+  for (let i=0; i<allQuestions.length; i++){
+    const q = allQuestions[i] || {};
+    const ans = (q.a !== undefined ? q.a : "—");
+    const hasBlank = (typeof q.q === "string" && q.q.indexOf("___") !== -1);
+    const displayEq = hasBlank ? q.q.replace("___", `<u>${ans}</u>`)
+                               : `${q.q} = ${ans}`;
+    correctHTML += `<div class="answer-chip" style="color:#1565c0;background:#e3f2fd;border-color:#90caf9;">${displayEq}</div>`;
+  }
+  correctHTML += `</div>`;
+
+  // Time taken
   const timeTaken = getTimeTakenStr();
 
   const win = window.open("", "_blank");
@@ -834,6 +850,7 @@ function printResults(){
       *{ box-sizing: border-box; }
       body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:20px; color:#111; }
       h1{ font-size: 24px; margin: 0 0 8px; }
+      h2{ font-size: 20px; margin: 20px 0 8px; page-break-before: always; }
       .meta{ font-size:18px; margin: 4px 0 14px; }
       .answers-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; align-items:start; }
       .answer-chip{ font-size:14px; padding:6px 8px; border:1px solid #ddd; border-radius:8px; background:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -848,7 +865,7 @@ function printResults(){
     <html>
       <head><title>Dr B's Times Table Ninja — ${belt} — ${username}</title>${css}</head>
       <body>
-        <h1>Dr B's Times Table Ninja — ${belt}</h1>
+        <h1>Your Answers</h1>
         <div class="meta">
           <strong>${username}</strong> — 
           Score: <strong>${correct} / ${allQuestions.length}</strong> — 
@@ -856,6 +873,10 @@ function printResults(){
           ${today}
         </div>
         ${answersHTML}
+
+        <h2>Correct Answers</h2>
+        ${correctHTML}
+
         <div style="margin-top:16px;">
           <button onclick="window.print()">Print / Save as PDF</button>
         </div>
