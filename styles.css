@@ -1,4 +1,3 @@
-
 /* =========================================================
    Times Tables Trainer - Stylesheet (frontpage-GH41)
    - HARD-LOCKED answer box position via grid rows
@@ -364,8 +363,8 @@ html, body {
 
 /* Optional: briefly indicate which home choice was chosen */
 .big-button.primary.active-choice {
-  background: #2e7d32;  /* darker than normal primary */
-  border-color: #2e7d32;
+  background: #2e7d2;
+  border-color: #2e7d2;
   color: #fff;
 }
 .big-button.secondary.active-choice {
@@ -388,20 +387,29 @@ html, body {
 }
 
 /* iPad portrait widths (older iPad 768px, Air 820px, Pro 834px) */
-@media (hover: none) and (pointer: coarse) and (min-width: 700px) and (max-width: 900px) {
+@media (hover: none) and (pointer: coarse) and (min-width: 700px) and (max-width: 900px) and (orientation: portrait) {
   .answer-input {
-    width: 900px;     /* enough for 8 digits */
-    max-width: 98vw;  /* allow nearly full screen */
-    font-size: 84px;  /* keep your desired font size */
+    width: 950px;     /* enough for 8 digits */
+    max-width: 98vw;  /* prevent overflow on narrow viewports */
+    font-size: 84px;  /* slightly smaller so longer numbers fit */
+  }
+  #quiz-container {
+    padding-bottom: 360px; /* ensure space for keypad */
   }
 }
-@media (hover: none) and (pointer: coarse) and (min-width: 900px) and (max-width: 1200px) {
+
+/* iPad landscape widths (typically 1024px wide) */
+@media (hover: none) and (pointer: coarse) and (min-width: 900px) and (max-width: 1200px) and (orientation: landscape) {
   .answer-input {
-    width: 900px;     /* wide enough for 8 digits */
-    max-width: 98vw;  /* prevent overflow */
-    font-size: 84px;  /* adjust as needed */
+    width: 800px;     /* slightly less wide for landscape, still fits 8 digits */
+    max-width: 90vw;
+    font-size: 70px;  /* slightly smaller font for landscape fit */
+  }
+  #quiz-container {
+    padding-bottom: 360px; /* ensure space for keypad */
   }
 }
+
 .choice.active {
   background: #444;
   color: #fff;
