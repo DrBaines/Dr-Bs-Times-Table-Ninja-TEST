@@ -220,14 +220,20 @@ body {
 }
 
 
-/* ---------- Adjusted home screen image sizes ---------- */
-.front-images img.ninja-baby  { height: 120px !important; }
-.front-images img.ninja-mini  { height: 160px !important; }
-.front-images img.ninja-main  { height: 200px !important; }
+/* Kill any earlier constraints */
+.front-images img {
+  max-width: none !important;
+  max-height: none !important;
+}
 
-/* iPad portrait fine-tune (slightly smaller so they fit neatly) */
+/* Baby → Mini → Ninja sizes */
+.front-images img.ninja-baby  { height: 300px !important; width: auto !important; }
+.front-images img.ninja-mini  { height: 450px !important; width: auto !important; }
+.front-images img.ninja-main  { height: 500px !important; width: auto !important; }
+
+/* iPad portrait fine-tune (optional, slightly smaller) */
 @media (min-width: 700px) and (max-width: 834px) and (orientation: portrait) {
-  .front-images img.ninja-baby  { height: 100px !important; }
-  .front-images img.ninja-mini  { height: 140px !important; }
-  .front-images img.ninja-main  { height: 180px !important; }
+  .front-images img.ninja-baby  { height: 300px !important; }
+  .front-images img.ninja-mini  { height: 450px !important; }
+  .front-images img.ninja-main  { height: 500px !important; }
 }
