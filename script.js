@@ -788,7 +788,15 @@ function printResults(){
   const timeTaken = getTimeTakenStr();
 
   // Build correct answers HTML
-  let correctHTML = `<div class="answers-grid" style="display:grid;grid-template-columns: repeat(5, 1fr);gap:8px;align-items:start;margin-top:10px;">`;
+  let correctHTML = `
+    <div class="answers-grid" style="
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:8px;
+      align-items:start;
+      margin-top:10px;
+    ">
+  `;
   for (let i=0; i<allQuestions.length; i++){
     const q = allQuestions[i] || {};
     const hasBlank = (typeof q.q === "string" && q.q.indexOf("___") !== -1);
@@ -801,14 +809,18 @@ function printResults(){
   const win = window.open("", "_blank");
   if (!win) { alert("Pop-up blocked. Please allow pop-ups to print."); return; }
 
+  // Save popup’s real print function
+  win._nativePrint = win.print.bind(win);
+
   const css = `
     <style>
+      *{ box-sizing: border-box; }
       body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:20px; color:#111; }
       h1{ font-size: 24px; margin: 0 0 8px; }
       h2{ font-size: 20px; margin: 20px 0 8px; }
       .meta{ font-size:18px; margin: 4px 0 14px; }
-      .answers-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; }
-      .answer-chip{ font-size:14px; padding:6px 8px; border:1px solid #ddd; border-radius:8px; background:#fff; }
+      .answers-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; align-items:start; }
+      .answer-chip{ font-size:14px; padding:6px 8px; border:1px solid #ddd; border-radius:8px; background:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
       .answer-chip.correct{ color:#2e7d32; background:#edf7ed; border-color:#c8e6c9; }
       .answer-chip.wrong{ color:#c62828; background:#fff1f1; border-color:#ffcdd2; }
       .answer-chip.correct-answer{ color:#1565c0; background:#e3f2fd; border-color:#90caf9; }
@@ -837,18 +849,17 @@ function printResults(){
         ${correctHTML}
 
         <div style="margin-top:16px;">
-          <button onclick="this.ownerDocument.defaultView.print()">Print / Save as PDF</button>
+          <button onclick="window._nativePrint()">Print / Save as PDF</button>
         </div>
       </body>
     </html>
   `);
   win.document.close();
 
-  // auto-print after load, using the popup's own context
-  try { win.onload = ()=>win.document.defaultView.print(); } catch {}
+  // auto-print once when window loads
+  try { win.onload = ()=>win._nativePrint(); } catch {}
 }
 window.printResults = printResults;
-
 
 
 
