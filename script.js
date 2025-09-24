@@ -491,7 +491,6 @@ function buildObsidianQuestions(total){
 }
 
 /* ====== Keypad + keyboard ====== */
-/* ====== Keypad + keyboard ====== */
 function createKeypad(){
   const host = $("answer-pad"); if(!host) return;
   host.innerHTML = `
