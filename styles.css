@@ -390,12 +390,18 @@ html, body {
 /* iPad portrait widths (older iPad 768px, Air 820px, Pro 834px) */
 @media (hover: none) and (pointer: coarse) and (min-width: 700px) and (max-width: 900px) {
   .answer-input {
-    width: 950px;     /* enough for 8 digits */
+    width: 900px;     /* enough for 8 digits */
     max-width: 98vw;  /* allow nearly full screen */
     font-size: 84px;  /* keep your desired font size */
   }
 }
-
+@media (hover: none) and (pointer: coarse) and (min-width: 900px) and (max-width: 1200px) {
+  .answer-input {
+    width: 900px;     /* wide enough for 8 digits */
+    max-width: 98vw;  /* prevent overflow */
+    font-size: 84px;  /* adjust as needed */
+  }
+}
 .choice.active {
   background: #444;
   color: #fff;
