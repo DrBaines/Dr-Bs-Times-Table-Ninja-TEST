@@ -369,21 +369,29 @@ function buildGoldQuestions(total){
   }
   return shuffle(out).slice(0,total);
 }
-/* Platinum: like Silver with exps [0,1,2] */
 function buildPlatinumQuestions(total){
   const out = [];
   const exps = [0,1,2];
   for (let i=0;i<total;i++){
     const A=randInt(2,12), B=randInt(1,10);
     const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
-    const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; const t=randInt(1,3);
+    const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
+    const t=randInt(1,3);
     if (t===1)      out.push({ q:`${bigA} × ${bigB}`, a:prod });
     else if (t===2) out.push({ q:`${bigB} × ${bigA}`, a:prod });
-    else            out.push({ q:`${prod} ÷ ${bigA}`, a:bigB });
+    else {
+        // new division format: (10^e × a × b) ÷ a^f
+        const f = exps[randInt(0, exps.length-1)];
+        const denom = Math.pow(A, f);
+        const numerator = bigA * bigB;
+        const question = `${numerator} ÷ ${denom}`;
+        const answer = numerator / denom;
+        out.push({ q: question, a: answer });
+    }
   }
   return shuffle(out).slice(0,total);
 }
-/* Obsidian: like Gold with exps [0,1,2] */
+
 function buildObsidianQuestions(total){
   const out = [];
   const exps = [0,1,2];
@@ -391,26 +399,43 @@ function buildObsidianQuestions(total){
   for (let i=0;i<half;i++){
     const A=randInt(2,12), B=randInt(1,10);
     const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
-    const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; const t=(i%4)+1;
+    const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
+    const t=(i%4)+1;
     if (t===1)      out.push({ q:`___ × ${bigA} = ${prod}`, a:bigB });
     else if (t===2) out.push({ q:`${bigA} × ___ = ${prod}`, a:bigB });
-    else if (t===3) out.push({ q:`___ ÷ ${bigA} = ${bigB}`, a:prod });
+    else if (t===3) {
+        // new division format: (10^e × a × b) ÷ a^f
+        const f = exps[randInt(0, exps.length-1)];
+        const denom = Math.pow(A, f);
+        const numerator = bigA * bigB;
+        const question = `${numerator} ÷ ${denom}`;
+        const answer = numerator / denom;
+        out.push({ q: question, a: answer });
+    }
     else            out.push({ q:`${prod} ÷ ___ = ${bigB}`, a:bigA });
   }
   for (let i=half;i<total;i++){
     const A=randInt(2,12), B=randInt(1,10);
     const e1=exps[randInt(0,exps.length-1)], e2=exps[randInt(0,exps.length-1)];
-    const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; const t=randInt(1,6);
+    const bigA=A*(10**e1), bigB=B*(10**e2), prod=bigA*bigB; 
+    const t=randInt(1,6);
     if (t===1)      out.push({ q:`___ × ${bigA} = ${prod}`, a:bigB });
     else if (t===2) out.push({ q:`${bigA} × ___ = ${prod}`, a:bigB });
-    else if (t===3) out.push({ q:`___ ÷ ${bigA} = ${bigB}`, a:prod });
+    else if (t===3) {
+        // new division format: (10^e × a × b) ÷ a^f
+        const f = exps[randInt(0, exps.length-1)];
+        const denom = Math.pow(A, f);
+        const numerator = bigA * bigB;
+        const question = `${numerator} ÷ ${denom}`;
+        const answer = numerator / denom;
+        out.push({ q: question, a: answer });
+    }
     else if (t===4) out.push({ q:`${prod} ÷ ___ = ${bigB}`, a:bigA });
     else if (t===5) out.push({ q:`${bigA} × ${bigB}`, a:prod });
     else            out.push({ q:`${bigB} × ${bigA}`, a:prod });
   }
   return shuffle(out).slice(0,total);
 }
-
 /* ====== Keypad + keyboard ====== */
 function createKeypad(){
   const host = $("answer-pad"); if(!host) return;
@@ -749,7 +774,7 @@ function endQuiz(){
       <div class="choice-buttons">
         <button class="big-button" onclick="showAnswers()">Show answers</button>
         <button class="big-button" onclick="printResults()">Print answers</button>
-        <button class="big-button" onclick="quitFromQuiz()">Quit to Home</button>
+        
       </div>
     `;
   }
