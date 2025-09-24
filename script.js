@@ -865,7 +865,7 @@ function printResults(){
     <html>
       <head><title>Dr B's Times Table Ninja — ${belt} — ${username}</title>${css}</head>
       <body>
-        <h1>Your Answers</h1>
+       <h1>Your Answers — ${username} — ${belt}</h1>
         <div class="meta">
           <strong>${username}</strong> — 
           Score: <strong>${correct} / ${allQuestions.length}</strong> — 
