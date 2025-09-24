@@ -427,3 +427,19 @@ html, body {
   .front-images img.ninja-mini  { height: 450px !important; }
   .front-images img.ninja-main  { height: 500px !important; }
 }
+/* Allow longer answers (up to ~8 digits) */
+.answer-input {
+  width: 600px !important;   /* wider box */
+  max-width: 90vw;           /* still responsive on smaller screens */
+  font-size: 84px;           /* big enough but not too big */
+  text-align: center;
+}
+
+/* iPad portrait fine-tune */
+@media (hover: none) and (pointer: coarse) and (max-width: 834px) {
+  .answer-input {
+    width: 600px !important;  /* same width on iPad */
+    max-width: 92vw;
+    font-size: 72px;          /* slightly smaller text so 8 digits fit */
+  }
+}
