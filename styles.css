@@ -1,8 +1,9 @@
 /* =========================================================
-   Times Tables Trainer - Stylesheet (frontpage-GH41 fixed)
-   - Answer box allows up to 8 digits (iPad + laptop)
-   - Hard-locked answer box position
-   - Keypad fixed right (desktop) / bottom (touch devices)
+   Times Tables Trainer - Stylesheet (frontpage-GH41)
+   - HARD-LOCKED answer box position via grid rows
+   - Question band: fixed height (desktop & tablet)
+   - Keypad right on desktop; bottom-docked on touch devices
+   - Answers grid: 5 columns, smaller; wrong = red
    ========================================================= */
 
 * { box-sizing: border-box; } 
@@ -39,17 +40,14 @@ body {
 
 /* ---------- Quiz container ---------- */
 #quiz-title { margin-top:10px; margin-bottom:20px; display:block; }
-.question { font-size: 100px; margin: 0; }
-
-/* Unified Answer Box (allow up to 8 digits) */
-.answer-input {
-  width: 600px;
-  max-width: 90vw;
-  font-size: 84px;
-  text-align: center;
-  margin-top: 0;
+.question { font-size: 100px; margin: 0; }  /* margin 0 so it never nudges rows */
+.answer-input { 
+  font-size: 84px; 
+  width: 600px;        /* bigger box to allow ~8 digits */
+  max-width: 90vw;     /* still responsive */
+  text-align: center; 
+  margin-top: 0; 
 }
-
 .timer { font-size: 50px; margin-top: 30px; display:none !important; }
 .score { font-size: 40px; margin-top: 30px; }
 
@@ -91,8 +89,12 @@ body {
   justify-self: start;
   text-align: left;
 }
-#answer   { grid-row: 2; justify-self: start; text-align: left; }
-#timer    { grid-row: 3; }
+#answer { 
+  grid-row: 2; 
+  justify-self: start;
+  text-align: left; 
+}
+#timer { grid-row: 3; }
 
 /* Shorter band on iPad/phones */
 @media (max-width: 834px) {
@@ -121,7 +123,7 @@ body {
   max-width: 1100px;
 }
 
-/* === Keypad grid (enter = 3 rows tall, clear top-right, back bottom-right, 0 spans 2 cols) === */
+/* === Keypad grid === */
 #answer-pad .pad {
   display: grid;
   grid-template-columns: repeat(4, 70px);
@@ -206,7 +208,7 @@ body {
   .quiz-row { display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:40px; }
   .subtitle { font-size: 36px; }
   .question { font-size: 80px; }
-  .answer-input { font-size: 72px; width: 90vw; }
+  .answer-input { font-size: 72px; width: 400px; } /* slightly smaller but still wide */
   #answer-pad .pad { grid-template-columns: repeat(4, 56px); grid-auto-rows: 56px; gap: 10px; }
   #answer-pad .pad-btn:not(.pad-enter):not(.pad-clear):not(.pad-back){ font-size:28px; }
   #answer-pad .pad-enter, #answer-pad .pad-clear, #answer-pad .pad-back { font-size: 18px; }
@@ -286,27 +288,29 @@ body {
 .belt-btn:active { transform: scale(0.99); }
 .belt-btn:focus { outline: 3px solid #7aa7ff; outline-offset: 3px; }
 .belt-btn:hover { filter: brightness(0.98); }
-
-.belt-btn .belt-btn-title { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
-.belt-btn .belt-btn-desc  { font-size: 16px; opacity: 0.9; }
-
-/* Reuse belt colours */
-.belt-btn.white    { background: #ffffff; border-color: rgba(0,0,0,0.12); }
-.belt-btn.yellow   { background: #fff59d; }
-.belt-btn.orange   { background: #ffcc80; }
-.belt-btn.green    { background: #a5d6a7; }
-.belt-btn.blue     { background: #90caf9; }
-.belt-btn.pink     { background: #f8bbd0; }
-.belt-btn.purple   { background: #d1c4e9; }
-.belt-btn.red      { background: #ef9a9a; }
-.belt-btn.black    { background: #e0e0e0; }
-.belt-btn.bronze   { background: #e7c9a6; }
-.belt-btn.silver   { background: #d9d9d9; }
-.belt-btn.gold     { background: #ffe8a3; }
-.belt-btn.platinum { background: #e8edf3; }
-.belt-btn.obsidian { background: #1f2937; color:#f3f4f6; }
-
-/* Title colour tweaks */
+.belt-btn .belt-btn-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+.belt-btn .belt-btn-desc {
+  font-size: 16px;
+  opacity: 0.9;
+}
+.belt-card.white,  .belt-btn.white  { background: #ffffff; border-color: rgba(0,0,0,0.12); }
+.belt-card.yellow, .belt-btn.yellow { background: #fff59d; }
+.belt-card.orange, .belt-btn.orange { background: #ffcc80; }
+.belt-card.green,  .belt-btn.green  { background: #a5d6a7; }
+.belt-card.blue,   .belt-btn.blue   { background: #90caf9; }
+.belt-card.pink,   .belt-btn.pink   { background: #f8bbd0; }
+.belt-card.purple, .belt-btn.purple { background: #d1c4e9; }
+.belt-card.red,    .belt-btn.red    { background: #ef9a9a; }
+.belt-card.black,  .belt-btn.black  { background: #e0e0e0; }
+.belt-card.bronze, .belt-btn.bronze { background: #e7c9a6; }
+.belt-card.silver, .belt-btn.silver { background: #d9d9d9; }
+.belt-card.gold,   .belt-btn.gold   { background: #ffe8a3; }
+.belt-card.platinum, .belt-btn.platinum { background: #e8edf3; }
+.belt-card.obsidian, .belt-btn.obsidian { background: #1f2937; color: #f3f4f6; }
 .belt-btn.green .belt-btn-title    { color: #0b3d0b; }
 .belt-btn.blue .belt-btn-title     { color: #0a2a5a; }
 .belt-btn.pink .belt-btn-title     { color: #5a0a35; }
@@ -317,22 +321,46 @@ body {
 .belt-btn.silver .belt-btn-title   { color: #222; }
 .belt-btn.obsidian .belt-btn-title { color: #fff; }
 
-/* --- iOS/iPad font inflation fixes --- */
-html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* Layout tweaks */
+@media (max-width: 1024px) { :root{ --pad-right: 120px; } #quiz-container{ max-width: 920px; } }
+@media (max-width: 834px)  { :root{ --pad-right: 80px; }  #quiz-container{ max-width: 860px; } }
+@media (min-width: 1440px) { :root{ --pad-right: clamp(240px, 12vw, 360px); } }
+
+/* iOS/iPad font inflation fixes */
+html, body {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 @supports (-webkit-touch-callout: none) {
-  .belt-card .belt-name { font-size: 24px !important; line-height: 1.15; }
-  .question { font-size: 80px !important; line-height: 1; }
-  @media (max-width: 700px) { .question { font-size: 64px !important; } }
+  .belt-card .belt-name {
+    font-size: 24px !important;
+    line-height: 1.15;
+  }
+  .question {
+    font-size: 80px !important;
+    line-height: 1;
+  }
+  @media (max-width: 700px) {
+    .question { font-size: 64px !important; }
+  }
 }
 
-/* Highlight selected table in Mini Tests */
+/* Highlight the selected table in Mini Tests */
 .table-btn.selected {
   background: #2e7d32 !important;
   border-color: #2e7d32 !important;
   color: #fff !important;
 }
-
-/* Title image under the buttons */
+.big-button.primary.active-choice {
+  background: #2e7d32;
+  border-color: #2e7d32;
+  color: #fff;
+}
+.big-button.secondary.active-choice {
+  background: #d79400;
+  border-color: #d79400;
+  color: #111;
+}
 .home-hero {
   margin: 20px auto 40px;
   text-align: center;
@@ -344,15 +372,8 @@ html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   border-radius: 12px;
   box-shadow: 0 8px 28px rgba(0,0,0,0.12);
 }
-
-/* Front images row */
-.front-images {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 12px;
+.choice.active {
+  background: #444;
+  color: #fff;
+  border-color: #222;
 }
-.front-images img.ninja-baby  { height: 70px; }
-.front-images img.ninja-mini  { height: 100px; }
-.front-images img.ninja-main  { height: 130px; }
