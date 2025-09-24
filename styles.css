@@ -219,12 +219,15 @@ body {
   flex-wrap: nowrap;
 }
 
-.front-images img.ninja-baby  { height: 70px; }
-.front-images img.ninja-mini  { height: 100px; }
-.front-images img.ninja-main  { height: 130px; }
 
+/* ---------- Adjusted home screen image sizes ---------- */
+.front-images img.ninja-baby  { height: 120px !important; }
+.front-images img.ninja-mini  { height: 160px !important; }
+.front-images img.ninja-main  { height: 200px !important; }
+
+/* iPad portrait fine-tune (slightly smaller so they fit neatly) */
 @media (min-width: 700px) and (max-width: 834px) and (orientation: portrait) {
-  .front-images img.ninja-baby  { height: 60px; }
-  .front-images img.ninja-mini  { height: 85px; }
-  .front-images img.ninja-main  { height: 110px; }
+  .front-images img.ninja-baby  { height: 100px !important; }
+  .front-images img.ninja-mini  { height: 140px !important; }
+  .front-images img.ninja-main  { height: 180px !important; }
 }
