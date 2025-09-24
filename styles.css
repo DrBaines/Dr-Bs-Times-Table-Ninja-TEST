@@ -1,9 +1,8 @@
 /* =========================================================
-   Times Tables Trainer - Stylesheet (frontpage-GH41)
-   - HARD-LOCKED answer box position via grid rows
-   - Question band: fixed height (desktop & tablet)
-   - Keypad right on desktop; bottom-docked on touch devices
-   - Answers grid: 5 columns, smaller; wrong = red
+   Times Tables Trainer - Stylesheet (frontpage-GH41 fixed)
+   - Answer box allows up to 8 digits (iPad + laptop)
+   - Hard-locked answer box position
+   - Keypad fixed right (desktop) / bottom (touch devices)
    ========================================================= */
 
 * { box-sizing: border-box; } 
@@ -40,8 +39,17 @@ body {
 
 /* ---------- Quiz container ---------- */
 #quiz-title { margin-top:10px; margin-bottom:20px; display:block; }
-.question { font-size: 100px; margin: 0; }  /* margin 0 so it never nudges rows */
-.answer-input { font-size: 100px; width: 340px; text-align: center; margin-top: 0; }
+.question { font-size: 100px; margin: 0; }
+
+/* Unified Answer Box (allow up to 8 digits) */
+.answer-input {
+  width: 600px;
+  max-width: 90vw;
+  font-size: 84px;
+  text-align: center;
+  margin-top: 0;
+}
+
 .timer { font-size: 50px; margin-top: 30px; display:none !important; }
 .score { font-size: 40px; margin-top: 30px; }
 
@@ -57,9 +65,7 @@ body {
   margin: 60px auto 0;
 }
 
-/* ====== HARD-LOCK the answer box position ======
-   Make the question column a grid with a fixed 1st row (the "band"),
-   so the input in row 2 NEVER moves, no matter how question text shrinks. */
+/* ====== HARD-LOCK the answer box position ====== */
 :root {
   --qband-desktop: 160px;
   --qband-tablet:  120px;
@@ -67,34 +73,32 @@ body {
 .question-col {
   display: grid;
   grid-template-rows: var(--qband-desktop) auto auto auto;
-  align-items: start;          /* already good */
-  justify-items: start;        /* ⬅️ was "center", change to "start" */
+  align-items: start;
+  justify-items: start;
   row-gap: 0;
-  text-align: left;            /* ⬅️ was "center" */
+  text-align: left;
 }
-
 
 /* Place core elements into explicit rows */
 #question { 
   grid-row: 1; 
   margin: 0;
-  line-height: 1;                /* stable font metrics */
-  white-space: nowrap;           /* single line; script can auto-shrink font */
+  line-height: 1;
+  white-space: nowrap;
   overflow: hidden; 
   text-overflow: clip;
   display: inline-block; 
-     justify-self: start;
-  text-align: left;/* stable inline box */
+  justify-self: start;
+  text-align: left;
 }
-#answer   { grid-row: 2; justify-self: start;
-  text-align: left; }
+#answer   { grid-row: 2; justify-self: start; text-align: left; }
 #timer    { grid-row: 3; }
 
 /* Shorter band on iPad/phones */
 @media (max-width: 834px) {
   .question-col {
     grid-template-rows: var(--qband-tablet) auto auto auto;
-    justify-items: start;   /* ensure left-justified here too */
+    justify-items: start;
     text-align: left;
   }
 }
@@ -166,21 +170,18 @@ body {
 #answer-pad .pad-btn:active { transform: scale(0.96); background:#f0f0f0; }
 #answer-pad .pad-btn:focus  { outline:3px solid #7aa7ff; outline-offset:2px; }
 
-/* Keypad area mapping (matches script.js) */
+/* Keypad area mapping */
 #answer-pad .pad [data-k="7"]   { grid-area: seven; }
 #answer-pad .pad [data-k="8"]   { grid-area: eight; }
 #answer-pad .pad [data-k="9"]   { grid-area: nine;  }
 #answer-pad .pad .pad-clear     { grid-area: clear; }
-
 #answer-pad .pad [data-k="4"]   { grid-area: four;  }
 #answer-pad .pad [data-k="5"]   { grid-area: five;  }
 #answer-pad .pad [data-k="6"]   { grid-area: six;   }
 #answer-pad .pad .pad-enter     { grid-area: enter; }
-
 #answer-pad .pad [data-k="1"]   { grid-area: one;   }
 #answer-pad .pad [data-k="2"]   { grid-area: two;   }
 #answer-pad .pad [data-k="3"]   { grid-area: three; }
-
 #answer-pad .pad .key-0         { grid-area: zero;  }
 #answer-pad .pad .pad-back      { grid-area: back;  }
 
@@ -204,8 +205,8 @@ body {
 @media (max-width: 700px) {
   .quiz-row { display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:40px; }
   .subtitle { font-size: 36px; }
-  .question { font-size: 80px; }  /* visual size only — row height is fixed by grid */
-  .answer-input { font-size: 72px; width: 280px; }
+  .question { font-size: 80px; }
+  .answer-input { font-size: 72px; width: 90vw; }
   #answer-pad .pad { grid-template-columns: repeat(4, 56px); grid-auto-rows: 56px; gap: 10px; }
   #answer-pad .pad-btn:not(.pad-enter):not(.pad-clear):not(.pad-back){ font-size:28px; }
   #answer-pad .pad-enter, #answer-pad .pad-clear, #answer-pad .pad-back { font-size: 18px; }
@@ -214,7 +215,7 @@ body {
   :root { --pad-bottom: 260px; }
 }
 
-/* ---------- Answers grid (5 columns, smaller; wrong = red) ---------- */
+/* ---------- Answers grid ---------- */
 .answers-grid { margin-top: 16px; }
 .answers-grid .answer-chip {
   font-size: 20px;
@@ -222,7 +223,7 @@ body {
   border-radius: 8px;
   background: #fff;
   border: 1px solid #ddd;
-  white-space: nowrap;      /* single line for each chip */
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -269,7 +270,8 @@ body {
 .belt-card.gold     { border-color:#f59e0b; }
 .belt-card.platinum { border-color:#64748b; }
 .belt-card.obsidian { border-color:#111; }
-/* === Belt buttons (replace card+button with a single coloured button) === */
+
+/* Belt buttons */
 .belt-btn {
   display: block;
   width: 100%;
@@ -281,38 +283,30 @@ body {
   box-shadow: 0 3px 10px rgba(0,0,0,0.06);
   transition: transform 0.03s ease, filter 0.15s ease;
 }
-
 .belt-btn:active { transform: scale(0.99); }
 .belt-btn:focus { outline: 3px solid #7aa7ff; outline-offset: 3px; }
 .belt-btn:hover { filter: brightness(0.98); }
 
-.belt-btn .belt-btn-title {
-  font-size: 22px;
-  font-weight: 800;
-  margin: 0 0 4px;
-}
-.belt-btn .belt-btn-desc {
-  font-size: 16px;
-  opacity: 0.9;
-}
+.belt-btn .belt-btn-title { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
+.belt-btn .belt-btn-desc  { font-size: 16px; opacity: 0.9; }
 
-/* Reuse the same colours as .belt-card by extending selectors */
-.belt-card.white,  .belt-btn.white  { background: #ffffff; border-color: rgba(0,0,0,0.12); }
-.belt-card.yellow, .belt-btn.yellow { background: #fff59d; }
-.belt-card.orange, .belt-btn.orange { background: #ffcc80; }
-.belt-card.green,  .belt-btn.green  { background: #a5d6a7; }
-.belt-card.blue,   .belt-btn.blue   { background: #90caf9; }
-.belt-card.pink,   .belt-btn.pink   { background: #f8bbd0; }
-.belt-card.purple, .belt-btn.purple { background: #d1c4e9; }
-.belt-card.red,    .belt-btn.red    { background: #ef9a9a; }
-.belt-card.black,  .belt-btn.black  { background: #e0e0e0; }
-.belt-card.bronze, .belt-btn.bronze { background: #e7c9a6; }
-.belt-card.silver, .belt-btn.silver { background: #d9d9d9; }
-.belt-card.gold,   .belt-btn.gold   { background: #ffe8a3; }
-.belt-card.platinum, .belt-btn.platinum { background: #e8edf3; }
-.belt-card.obsidian, .belt-btn.obsidian { background: #1f2937; color: #f3f4f6; }
+/* Reuse belt colours */
+.belt-btn.white    { background: #ffffff; border-color: rgba(0,0,0,0.12); }
+.belt-btn.yellow   { background: #fff59d; }
+.belt-btn.orange   { background: #ffcc80; }
+.belt-btn.green    { background: #a5d6a7; }
+.belt-btn.blue     { background: #90caf9; }
+.belt-btn.pink     { background: #f8bbd0; }
+.belt-btn.purple   { background: #d1c4e9; }
+.belt-btn.red      { background: #ef9a9a; }
+.belt-btn.black    { background: #e0e0e0; }
+.belt-btn.bronze   { background: #e7c9a6; }
+.belt-btn.silver   { background: #d9d9d9; }
+.belt-btn.gold     { background: #ffe8a3; }
+.belt-btn.platinum { background: #e8edf3; }
+.belt-btn.obsidian { background: #1f2937; color:#f3f4f6; }
 
-/* Title colour tweaks for darker backgrounds */
+/* Title colour tweaks */
 .belt-btn.green .belt-btn-title    { color: #0b3d0b; }
 .belt-btn.blue .belt-btn-title     { color: #0a2a5a; }
 .belt-btn.pink .belt-btn-title     { color: #5a0a35; }
@@ -322,55 +316,20 @@ body {
 .belt-btn.bronze .belt-btn-title   { color: #5c4428; }
 .belt-btn.silver .belt-btn-title   { color: #222; }
 .belt-btn.obsidian .belt-btn-title { color: #fff; }
-/* Layout tweaks (desktop side dock) */
-@media (max-width: 1024px) { :root{ --pad-right: 120px; } #quiz-container{ max-width: 920px; } }
-@media (max-width: 834px)  { :root{ --pad-right: 80px; }  #quiz-container{ max-width: 860px; } }
-@media (min-width: 1440px) { :root{ --pad-right: clamp(240px, 12vw, 360px); } }
 
 /* --- iOS/iPad font inflation fixes --- */
-
-/* 1) Globally disable text inflation on iOS */
-html, body {
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-/* 2) Extra guard: force consistent sizes on iOS only */
+html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 @supports (-webkit-touch-callout: none) {
-  /* Belt names: keep consistent across all belts (Platinum, Obsidian, etc.) */
-  .belt-card .belt-name {
-    font-size: 24px !important;
-    line-height: 1.15;
-  }
-
-  /* Questions: match your preferred “Silver” size on iPad */
-  .question {
-    font-size: 80px !important;  /* change if your Silver uses a different size */
-    line-height: 1;
-  }
-
-  /* Smaller iPad widths */
-  @media (max-width: 700px) {
-    .question { font-size: 64px !important; }
-  }
+  .belt-card .belt-name { font-size: 24px !important; line-height: 1.15; }
+  .question { font-size: 80px !important; line-height: 1; }
+  @media (max-width: 700px) { .question { font-size: 64px !important; } }
 }
-/* Highlight the selected table in Mini Tests */
+
+/* Highlight selected table in Mini Tests */
 .table-btn.selected {
-  background: #2e7d32 !important;  /* darker green */
+  background: #2e7d32 !important;
   border-color: #2e7d32 !important;
   color: #fff !important;
-}
-
-/* Optional: briefly indicate which home choice was chosen */
-.big-button.primary.active-choice {
-  background: #2e7d32;  /* darker than normal primary */
-  border-color: #2e7d32;
-  color: #fff;
-}
-.big-button.secondary.active-choice {
-  background: #d79400;  /* darker amber */
-  border-color: #d79400;
-  color: #111;
 }
 
 /* Title image under the buttons */
@@ -386,60 +345,14 @@ html, body {
   box-shadow: 0 8px 28px rgba(0,0,0,0.12);
 }
 
-/* iPad portrait widths (older iPad 768px, Air 820px, Pro 834px) */
-@media (hover: none) and (pointer: coarse) and (min-width: 700px) and (max-width: 900px) {
-  .answer-input {
-    width: 600px;     /* wider box for iPad portrait */
-    max-width: 92vw;  /* prevent overflow on narrow viewports */
-    font-size: 84px;  /* optional: slightly smaller so longer numbers fit */
-  }
-}
-
-.choice.active {
-  background: #444;
-  color: #fff;
-  border-color: #222;
-}
-/* ===== FRONT IMAGES — FORCE SIZES & ORDER (final override) ===== */
+/* Front images row */
 .front-images {
   margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
   gap: 12px;
-  flex-wrap: nowrap;
 }
-
-/* Kill any earlier constraints */
-.front-images img {
-  max-width: none !important;
-  max-height: none !important;
-}
-
-/* Baby → Mini → Ninja sizes */
-.front-images img.ninja-baby  { height: 300px !important; width: auto !important; }
-.front-images img.ninja-mini  { height: 450px !important; width: auto !important; }
-.front-images img.ninja-main  { height: 500px !important; width: auto !important; }
-
-/* iPad portrait fine-tune (optional, slightly smaller) */
-@media (min-width: 700px) and (max-width: 834px) and (orientation: portrait) {
-  .front-images img.ninja-baby  { height: 300px !important; }
-  .front-images img.ninja-mini  { height: 450px !important; }
-  .front-images img.ninja-main  { height: 500px !important; }
-}
-/* Allow longer answers (up to ~8 digits) */
-.answer-input {
-  width: 600px !important;   /* wider box */
-  max-width: 90vw;           /* still responsive on smaller screens */
-  font-size: 84px;           /* big enough but not too big */
-  text-align: center;
-}
-
-/* iPad portrait fine-tune */
-@media (hover: none) and (pointer: coarse) and (max-width: 834px) {
-  .answer-input {
-    width: 600px !important;  /* same width on iPad */
-    max-width: 92vw;
-    font-size: 72px;          /* slightly smaller text so 8 digits fit */
-  }
-}
+.front-images img.ninja-baby  { height: 70px; }
+.front-images img.ninja-mini  { height: 100px; }
+.front-images img.ninja-main  { height: 130px; }
