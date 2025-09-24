@@ -923,7 +923,7 @@ function endQuiz(){
       </div>
 
       <div class="choice-buttons">
-        <button class="big-button" onclick="showAnswers()">Show answers</button>
+        
         <button class="big-button" onclick="printResults()">Print answers</button>
         
       </div>
