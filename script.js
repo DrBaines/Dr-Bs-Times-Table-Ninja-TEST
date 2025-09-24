@@ -495,32 +495,33 @@ function createKeypad(){
   const host = $("answer-pad"); if(!host) return;
   host.innerHTML = `
     <div class="pad">
-      <button class="pad-btn" data-k="7">7</button>
-      <button class="pad-btn" data-k="8">8</button>
-      <button class="pad-btn" data-k="9">9</button>
-      <button class="pad-btn pad-back" data-k="back">⌫</button>
+      <button class="pad-btn" data-k="7" style="grid-area: seven;">7</button>
+      <button class="pad-btn" data-k="8" style="grid-area: eight;">8</button>
+      <button class="pad-btn" data-k="9" style="grid-area: nine;">9</button>
+      <button class="pad-btn" data-k="." style="grid-area: clear;">.</button>
 
-      <button class="pad-btn" data-k="4">4</button>
-      <button class="pad-btn" data-k="5">5</button>
-      <button class="pad-btn" data-k="6">6</button>
-      <button class="pad-btn pad-enter" data-k="enter">Enter</button>
+      <button class="pad-btn" data-k="4" style="grid-area: four;">4</button>
+      <button class="pad-btn" data-k="5" style="grid-area: five;">5</button>
+      <button class="pad-btn" data-k="6" style="grid-area: six;">6</button>
+      <button class="pad-btn pad-enter" data-k="enter" style="grid-area: enter;">Enter</button>
 
-      <button class="pad-btn" data-k="1">1</button>
-      <button class="pad-btn" data-k="2">2</button>
-      <button class="pad-btn" data-k="3">3</button>
+      <button class="pad-btn" data-k="1" style="grid-area: one;">1</button>
+      <button class="pad-btn" data-k="2" style="grid-area: two;">2</button>
+      <button class="pad-btn" data-k="3" style="grid-area: three;">3</button>
 
-      <button class="pad-btn key-0" data-k="0">0</button>
-      <button class="pad-btn" data-k=".">.</button>
+      <button class="pad-btn key-0" data-k="0" style="grid-area: zero;">0</button>
+      <button class="pad-btn pad-back" data-k="back" style="grid-area: back;">⌫</button>
     </div>`;
-  host.style.display="block";
+  host.style.display="block"; 
   host.style.pointerEvents="auto";
   host.querySelectorAll(".pad-btn").forEach(btn=>{
     btn.addEventListener("pointerdown",(e)=>{
-      e.preventDefault();
-      handleKey(btn.getAttribute("data-k"));
+      e.preventDefault(); 
+      handleKey(btn.getAttribute("data-k")); 
     },{passive:false});
   });
 }
+
 
 function destroyKeypad(){
   const host=$("answer-pad"); 
