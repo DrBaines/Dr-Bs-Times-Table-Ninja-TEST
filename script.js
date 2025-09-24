@@ -846,7 +846,7 @@ function printResults(){
         ${correctHTML}
 
         <div style="margin-top:16px;">
-          <button onclick="window.print()">Print / Save as PDF</button>
+          <button onclick="self.print()">Print / Save as PDF</button>
         </div>
       </body>
     </html>
@@ -855,7 +855,6 @@ function printResults(){
   try { win.onload = ()=>win.print(); } catch {}
 }
 window.printResults = printResults;
-
 
 
 function endQuiz(){
