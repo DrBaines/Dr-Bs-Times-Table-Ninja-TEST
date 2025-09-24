@@ -491,61 +491,69 @@ function buildObsidianQuestions(total){
 }
 
 /* ====== Keypad + keyboard ====== */
+/* ====== Keypad + keyboard ====== */
 function createKeypad(){
   const host = $("answer-pad"); if(!host) return;
   host.innerHTML = `
     <div class="pad">
-<button class="pad-btn" data-k="7">7</button>
-<button class="pad-btn" data-k="8">8</button>
-<button class="pad-btn" data-k="9">9</button>
-<button class="pad-btn pad-back" data-k="back">⌫</button>
+      <button class="pad-btn" data-k="7">7</button>
+      <button class="pad-btn" data-k="8">8</button>
+      <button class="pad-btn" data-k="9">9</button>
+      <button class="pad-btn pad-back" data-k="back">⌫</button>
 
-<button class="pad-btn" data-k="4">4</button>
-<button class="pad-btn" data-k="5">5</button>
-<button class="pad-btn" data-k="6">6</button>
-<button class="pad-btn pad-enter" data-k="enter">Enter</button>
+      <button class="pad-btn" data-k="4">4</button>
+      <button class="pad-btn" data-k="5">5</button>
+      <button class="pad-btn" data-k="6">6</button>
+      <button class="pad-btn pad-enter" data-k="enter">Enter</button>
 
-<button class="pad-btn" data-k="1">1</button>
-<button class="pad-btn" data-k="2">2</button>
-<button class="pad-btn" data-k="3">3</button>
+      <button class="pad-btn" data-k="1">1</button>
+      <button class="pad-btn" data-k="2">2</button>
+      <button class="pad-btn" data-k="3">3</button>
 
-<button class="pad-btn key-0" data-k="0">0</button>
-<button class="pad-btn" data-k=".">.</button>
+      <button class="pad-btn key-0" data-k="0">0</button>
+      <button class="pad-btn" data-k=".">.</button>
     </div>`;
-  host.style.display="block"; host.style.pointerEvents="auto";
+  host.style.display="block"; 
+  host.style.pointerEvents="auto";
   host.querySelectorAll(".pad-btn").forEach(btn=>{
-    btn.addEventListener("pointerdown",(e)=>{ e.preventDefault(); handleKey(btn.getAttribute("data-k")); },{passive:false});
+    btn.addEventListener("pointerdown",(e)=>{
+      e.preventDefault(); 
+      handleKey(btn.getAttribute("data-k")); 
+    },{passive:false});
   });
 }
 
 function destroyKeypad(){
-  const host=$("answer-pad"); if(!host) return; host.innerHTML=""; host.style.display=""; host.style.pointerEvents="";
+  const host=$("answer-pad"); 
+  if(!host) return; 
+  host.innerHTML=""; 
+  host.style.display="none"; 
+  host.style.pointerEvents="none";
 }
 
-ffunction handleKey(val){
-  const a = $("answer"); 
-  if (!a || ended) return;
+function handleKey(val){
+  const a=$("answer"); 
+  if(!a || ended) return;
 
-  if (val === "clear"){ 
-    a.value = ""; 
+  if (val==="clear"){ 
+    a.value=""; 
     a.dispatchEvent(new Event("input",{bubbles:true})); 
     return; 
   }
-  if (val === "back"){ 
+  if (val==="back"){ 
     a.value = a.value.slice(0,-1); 
     a.dispatchEvent(new Event("input",{bubbles:true})); 
     return; 
   }
-  if (val === "enter"){ 
+  if (val==="enter"){ 
     safeSubmit(); 
     return; 
   }
 
-  // Digits or decimal
+  // digits or decimal
   if (/^\d$/.test(val) || val === "."){
     if (a.value.length < 10){
-      // prevent multiple decimals
-      if (val === "." && a.value.includes(".")) return;
+      if (val === "." && a.value.includes(".")) return; // only one decimal
       a.value += val;
       a.dispatchEvent(new Event("input",{bubbles:true}));
     }
@@ -553,17 +561,15 @@ ffunction handleKey(val){
   }
 }
 
-// Allow decimal via keyboard in attachKeyboard()
 function attachKeyboard(a){
   if (desktopKeyHandler){ 
     document.removeEventListener("keydown", desktopKeyHandler); 
-    desktopKeyHandler = null; 
+    desktopKeyHandler=null; 
   }
-
   desktopKeyHandler = (e)=>{
     if (IS_TOUCH) return; // on touch, use on-screen keypad only
     const quiz = $("quiz-container"); 
-    if (!quiz || quiz.style.display==="none" || ended) return;
+    if(!quiz || quiz.style.display==="none" || ended) return;
     if (!a || a.style.display==="none") return;
 
     if (/^\d$/.test(e.key)){ 
@@ -578,32 +584,25 @@ function attachKeyboard(a){
       e.preventDefault(); 
       safeSubmit(); 
     }
-    else if (e.key==="." && a.value.indexOf(".") === -1 && a.value.length < 10){ 
+    else if (e.key==="." && a.value.indexOf(".")===-1 && a.value.length < 10){ 
       e.preventDefault(); 
       a.value += "."; 
     }
+    // all other keys are ignored, no preventDefault
   };
-
   document.addEventListener("keydown", desktopKeyHandler);
 
   if (a) a.addEventListener("input", ()=>{
-    // Only allow digits and at most one decimal point
+    // allow only digits + at most one decimal point
     let v = a.value.replace(/[^0-9.]/g,"");
     const firstDot = v.indexOf(".");
     if (firstDot !== -1) {
-      // keep only the first dot
       v = v.substring(0, firstDot + 1) + v.substring(firstDot + 1).replace(/\./g, "");
     }
     a.value = v.slice(0,10);
   });
 }
-function safeSubmit(){
-  const now = Date.now(); if (now < submitLockedUntil) return; submitLockedUntil = now + 200;
-  const a = $("answer"); if(!a || ended) return;
-  const valStr = a.value.trim(); userAnswers[currentIndex] = (valStr===""?"":Number(valStr));
-  currentIndex++; if (currentIndex >= allQuestions.length){ endQuiz(); return; }
-  showQuestion();
-}
+
 
 /* ====== Timer ====== */
 function startTimer(seconds){
