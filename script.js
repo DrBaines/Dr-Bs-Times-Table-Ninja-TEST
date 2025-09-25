@@ -773,7 +773,6 @@ function showQuestion(){
 }
 
 /* ====== Answers + Printing ====== */
-/* ====== Answers + Printing ====== */
 function buildAnswersHTML(){
   let html = `
     <div class="answers-grid" style="
@@ -796,19 +795,14 @@ function buildAnswersHTML(){
     const displayEq = hasBlank ? q.q.replace("___", `<u>${u}</u>`)
                                : `${q.q} = ${u}`;
 
-    const baseStyle = "white-space:nowrap;font-size:16px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;padding:6px 10px;border-radius:8px;border:1px solid #ddd;background:#fff;";
-    const okStyle   = "color:#2e7d32;background:#edf7ed;border-color:#c8e6c9;";
-    const badStyle  = "color:#c62828;background:#fff1f1;border-color:#ffcdd2;";
-    const blueStyle = "color:#1565c0;background:#e3f2fd;border-color:#90caf9;";
-
     // Student’s answer chip
-    html += `<div class="answer-chip ${ok ? "correct" : "wrong"}" style="${baseStyle}${ok ? okStyle : badStyle}">${displayEq}</div>`;
+    html += `<div class="answer-chip ${ok ? "correct" : "wrong"}">${displayEq}</div>`;
 
     // If wrong, add corrected version underneath
     if (!ok){
       const correctEq = hasBlank ? q.q.replace("___", `<u>${q.a}</u>`)
                                  : `${q.q} = ${q.a}`;
-      html += `<div class="answer-chip correct-answer" style="${baseStyle}${blueStyle};margin-top:-6px;margin-left:12px;font-size:14px;">${correctEq}</div>`;
+      html += `<div class="answer-chip correct-answer" style="margin-top:-6px;margin-left:12px;">${correctEq}</div>`;
     }
   }
 
@@ -844,9 +838,9 @@ function printResults(){
       .meta{ font-size:18px; margin: 4px 0 14px; }
       .answers-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; align-items:start; }
       .answer-chip{ font-size:14px; padding:6px 8px; border:1px solid #ddd; border-radius:8px; background:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-      .answer-chip.correct{ color:#2e7d32; background:#edf7ed; border-color:#c8e6c9; }
-      .answer-chip.wrong{ color:#c62828; background:#fff1f1; border-color:#ffcdd2; }
-      .answer-chip.correct-answer{ color:#1565c0; background:#e3f2fd; border-color:#90caf9; }
+      .answer-chip.correct{ color:#2e7d32; background:#edf7ed; border-color:#c8e6c9; }   /* green */
+      .answer-chip.wrong{ color:#c62828; background:#fff1f1; border-color:#ffcdd2; }    /* red */
+      .answer-chip.correct-answer{ color:#1565c0; background:#e3f2fd; border-color:#90caf9; } /* blue */
       @media print { @page { margin: 12mm; } button { display:none; } }
     </style>
   `;
@@ -875,6 +869,7 @@ function printResults(){
   try { win.onload = ()=>win.print(); } catch {}
 }
 window.printResults = printResults;
+
 
 
 function endQuiz(){
