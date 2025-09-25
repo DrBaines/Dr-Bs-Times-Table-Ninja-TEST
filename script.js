@@ -833,19 +833,19 @@ function printResults(){
   if (!win) { alert("Pop-up blocked. Please allow pop-ups to print."); return; }
 
   const css = `
-    <style>
-      *{ box-sizing: border-box; }
-      body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:20px; color:#111; }
-      h1{ font-size: 24px; margin: 0 0 8px; }
-      .meta{ font-size:18px; margin: 4px 0 14px; }
-      .answers-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; align-items:start; }
-      .answer-chip{ font-size:14px; padding:6px 8px; border:1px solid #ddd; border-radius:8px; background:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-      .answer-chip.correct{ color:#2e7d32; background:#edf7ed; border-color:#c8e6c9; }   /* green */
-      .answer-chip.wrong{ color:#c62828; background:#fff1f1; border-color:#ffcdd2; }    /* red */
-      .answer-chip.correct-answer{ color:#1565c0; background:#e3f2fd; border-color:#90caf9; } /* blue */
-      @media print { @page { margin: 12mm; } button { display:none; } }
-    </style>
-  `;
+  <style>
+    *{ box-sizing: border-box; }
+    body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:20px; color:#111; }
+    h1{ font-size: 24px; margin: 0 0 8px; }
+    .meta{ font-size:18px; margin: 4px 0 14px; }
+    .answers-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:12px; align-items:start; margin-top:16px; }
+    .answer-chip{ font-size:20px; padding:10px 16px; border:1px solid #ddd; border-radius:8px; background:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:bold; }
+    .answer-chip.correct{ color:#2e7d32; background:#edf7ed; border-color:#c8e6c9; }
+    .answer-chip.wrong{ color:#c62828; background:#fff1f1; border-color:#ffcdd2; }
+    .answer-chip.correct-answer{ font-size:13px; padding:4px 8px; margin-left:16px; margin-top:4px; font-weight:normal; font-style:italic; color:#1565c0; background:#e3f2fd; border-color:#90caf9; }
+    @media print { @page { margin: 12mm; } button { display:none; } }
+  </style>
+`;
 
   win.document.open();
   win.document.write(`
