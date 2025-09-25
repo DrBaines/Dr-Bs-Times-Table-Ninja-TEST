@@ -805,22 +805,8 @@ function buildAnswersHTML(){
   return html;
 }
 
-function printResults(){
-  // Compute score + name
-  let correct = 0;
-  for (let i = 0; i < allQuestions.length; i++){
-    const c = Number(allQuestions[i].a);
-    const u = (userAnswers[i] === "" ? NaN : Number(userAnswers[i]));
-    if (!Number.isNaN(u) && u === c) correct++;
-  }
-  const nameInput = $("home-username");
-  const username = nameInput ? (nameInput.value || "Player").trim() : "Player";
-  const today = formatToday();
-  const answersHTML = buildAnswersHTML();
-  const belt = modeLabel || "Quiz";
-
-  // Build correct answers HTML
-  let correctHTML = `
+function buildAnswersHTML(){
+  let html = `
     <div class="answers-grid" style="
       display:grid;
       grid-template-columns: repeat(5, 1fr);
@@ -829,64 +815,38 @@ function printResults(){
       margin-top:10px;
     ">
   `;
+
   for (let i=0; i<allQuestions.length; i++){
     const q = allQuestions[i] || {};
-    const ans = (q.a !== undefined ? q.a : "—");
+    const uRaw = userAnswers[i];
+    const u = (uRaw===undefined || uRaw==="") ? "—" : String(uRaw);
+    const ok = (uRaw === q.a);
     const hasBlank = (typeof q.q === "string" && q.q.indexOf("___") !== -1);
-    const displayEq = hasBlank ? q.q.replace("___", `<u>${ans}</u>`)
-                               : `${q.q} = ${ans}`;
-    correctHTML += `<div class="answer-chip" style="color:#1565c0;background:#e3f2fd;border-color:#90caf9;">${displayEq}</div>`;
+
+    // Student’s displayed answer
+    const displayEq = hasBlank ? q.q.replace("___", `<u>${u}</u>`)
+                               : `${q.q} = ${u}`;
+
+    const baseStyle = "white-space:nowrap;font-size:16px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;padding:6px 10px;border-radius:8px;border:1px solid #ddd;background:#fff;";
+    const okStyle   = "color:#2e7d32;background:#edf7ed;border-color:#c8e6c9;";
+    const badStyle  = "color:#c62828;background:#fff1f1;border-color:#ffcdd2;";
+    const blueStyle = "color:#1565c0;background:#e3f2fd;border-color:#90caf9;";
+
+    // Student’s answer chip
+    html += `<div class="answer-chip ${ok ? "correct" : "wrong"}" style="${baseStyle}${ok ? okStyle : badStyle}">${displayEq}</div>`;
+
+    // If wrong, add corrected version underneath
+    if (!ok){
+      const correctEq = hasBlank ? q.q.replace("___", `<u>${q.a}</u>`)
+                                 : `${q.q} = ${q.a}`;
+      html += `<div class="answer-chip correct-answer" style="${baseStyle}${blueStyle}">${correctEq}</div>`;
+    }
   }
-  correctHTML += `</div>`;
 
-  // Time taken
-  const timeTaken = getTimeTakenStr();
-
-  const win = window.open("", "_blank");
-  if (!win) { alert("Pop-up blocked. Please allow pop-ups to print."); return; }
-
-  const css = `
-    <style>
-      *{ box-sizing: border-box; }
-      body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:20px; color:#111; }
-      h1{ font-size: 24px; margin: 0 0 8px; }
-      h2{ font-size: 20px; margin: 20px 0 8px; page-break-before: always; }
-      .meta{ font-size:18px; margin: 4px 0 14px; }
-      .answers-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; align-items:start; }
-      .answer-chip{ font-size:14px; padding:6px 8px; border:1px solid #ddd; border-radius:8px; background:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-      .answer-chip.correct{ color:#2e7d32; background:#edf7ed; border-color:#c8e6c9; }
-      .answer-chip.wrong{ color:#c62828; background:#fff1f1; border-color:#ffcdd2; }
-      @media print { @page { margin: 12mm; } button { display:none; } }
-    </style>
-  `;
-
-  win.document.open();
-  win.document.write(`
-    <html>
-      <head><title>Dr B's Times Table Ninja — ${belt} — ${username}</title>${css}</head>
-      <body>
-       <h1>Your Answers — ${username} — ${belt}</h1>
-        <div class="meta">
-          <strong>${username}</strong> — 
-          Score: <strong>${correct} / ${allQuestions.length}</strong> — 
-          Time taken: <strong>${timeTaken}</strong> — 
-          ${today}
-        </div>
-        ${answersHTML}
-
-        <h2>Correct Answers</h2>
-        ${correctHTML}
-
-        <div style="margin-top:16px;">
-          <button onclick="window.print()">Print / Save as PDF</button>
-        </div>
-      </body>
-    </html>
-  `);
-  win.document.close();
-  try { win.onload = ()=>win.print(); } catch {}
+  html += `</div>`;
+  return html;
 }
-window.printResults = printResults;
+
 
 
 function endQuiz(){
