@@ -795,15 +795,18 @@ function buildAnswersHTML(){
     const displayEq = hasBlank ? q.q.replace("___", `<u>${u}</u>`)
                                : `${q.q} = ${u}`;
 
-    // Student’s answer chip
-    html += `<div class="answer-chip ${ok ? "correct" : "wrong"}">${displayEq}</div>`;
+    // Build inner HTML for this cell
+    let cellHTML = `<div class="answer-chip ${ok ? "correct" : "wrong"}">${displayEq}</div>`;
 
-    // If wrong, add corrected version underneath
+    // If wrong, add corrected version stacked below
     if (!ok){
       const correctEq = hasBlank ? q.q.replace("___", `<u>${q.a}</u>`)
                                  : `${q.q} = ${q.a}`;
-      html += `<div class="answer-chip correct-answer" style="margin-top:-6px;margin-left:12px;">${correctEq}</div>`;
+      cellHTML += `<div class="answer-chip correct-answer" style="margin-top:4px;font-size:13px;">${correctEq}</div>`;
     }
+
+    // Wrap into a single grid cell
+    html += `<div style="display:flex;flex-direction:column;align-items:flex-start;">${cellHTML}</div>`;
   }
 
   html += `</div>`;
